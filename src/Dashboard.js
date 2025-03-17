@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Input, Button } from "@/components/ui/input";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TradingViewWidget from "./TradingViewWidget";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
