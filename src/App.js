@@ -1,10 +1,15 @@
-import React from "react";
-import Dashboard from "./Dashboard";
+import React, { useState } from "react";
+import StockChart from "./components/StockChart";
+import StockSelector from "./components/StockSelector";
 
 function App() {
+  const [ticker, setTicker] = useState("AAPL"); // Default to AAPL
+
   return (
     <div>
-      <Dashboard />
+      <h1>QuantumVest AI Dashboard</h1>
+      <StockSelector setTicker={setTicker} />
+      <StockChart ticker={ticker} />
     </div>
   );
 }
