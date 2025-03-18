@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import StockChart from "./components/StockChart"; // Import the new chart component
 
 function App() {
   const [stockList, setStockList] = useState([]);
@@ -62,18 +63,7 @@ function App() {
       )}
 
       {/* 🔥 Stock Price Chart */}
-      {chartData.length > 0 && (
-        <div>
-          <h2>Stock Price Chart</h2>
-          <svg width="600" height="300">
-            {chartData.map((point, index) => {
-              const x = index * 10;
-              const y = 300 - point.Close / 2;
-              return <circle key={index} cx={x} cy={y} r="2" fill="blue" />;
-            })}
-          </svg>
-        </div>
-      )}
+      {chartData.length > 0 && <StockChart data={chartData} />}
     </div>
   );
 }
