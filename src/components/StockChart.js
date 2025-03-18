@@ -5,16 +5,29 @@ import "chart.js/auto";
 
 const StockChart = ({ ticker }) => {
   const [stockData, setStockData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
       if (!ticker) return;
-      const data = await fetchStockData(ticker);
-      setStockData(data);
+      try {
+        const data = await fetchStockData(ticker);
+        if (!data || !data.market_data || data.market_data.length === 0) {
+          setError("No stock data available.");
+          setStockData(null);
+        } else {
+          setStockData(data);
+          setError(null);
+        }
+      } catch (err) {
+        setError("Failed to fetch stock data.");
+        setStockData(null);
+      }
     };
     getData();
   }, [ticker]);
 
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!stockData) return <p>Loading data...</p>;
 
   const chartData = {
