@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import StockChart from "./components/StockChart"; // Import the new chart component
+import StockChart from "./components/StockChart"; // ✅ Ensure this exists
 
 function App() {
   const [stockList, setStockList] = useState([]);
   const [selectedStock, setSelectedStock] = useState("");
   const [prediction, setPrediction] = useState(null);
-  const [chartData, setChartData] = useState([]);
 
   // 🔥 Fetch available stock options from backend
   useEffect(() => {
@@ -15,7 +14,7 @@ function App() {
       .catch((error) => console.error("Failed to load stocks", error));
   }, []);
 
-  // 🔥 Handle stock selection and fetch analysis
+  // 🔥 Handle stock selection and fetch predictions
   const handleStockChange = (event) => {
     const ticker = event.target.value;
     setSelectedStock(ticker);
@@ -24,11 +23,9 @@ function App() {
       .then((response) => {
         if (response.data.error) {
           setPrediction(null);
-          setChartData([]);
           alert(`Error: ${response.data.error}`);
         } else {
           setPrediction(response.data.prediction);
-          setChartData(response.data.market_data);
         }
       })
       .catch((error) => console.error("Failed to fetch stock data", error));
@@ -63,7 +60,7 @@ function App() {
       )}
 
       {/* 🔥 Stock Price Chart */}
-      {chartData.length > 0 && <StockChart data={chartData} />}
+      {selectedStock && <StockChart ticker={selectedStock} />}
     </div>
   );
 }
