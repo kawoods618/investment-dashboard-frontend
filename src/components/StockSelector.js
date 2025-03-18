@@ -1,18 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const StockSelector = ({ setTicker }) => {
-  const handleChange = (event) => {
-    setTicker(event.target.value);
+const StockSelector = ({ onSelect }) => {
+  const [stockList, setStockList] = useState([]);
+  const [selectedStock, setSelectedStock] = useState("");
+
+  useEffect(() => {
+    axios.get("https://investment-dashboard-backend-production.up.railway.app/api/available_stocks")
+      .then((response) => setStockList(response.data.stocks))
+      .catch((error) => console.error("Failed to load stocks", error));
+  }, []);
+
+  const handleStockChange = (event) => {
+    const ticker = event.target.value;
+    setSelectedStock(ticker);
+    onSelect(ticker);
   };
 
   return (
-    <select onChange={handleChange}>
-      <option value="AAPL">Apple (AAPL)</option>
-      <option value="MSFT">Microsoft (MSFT)</option>
-      <option value="TSLA">Tesla (TSLA)</option>
-      <option value="NVDA">NVIDIA (NVDA)</option>
-      <option value="GOOGL">Google (GOOGL)</option>
-    </select>
+    <div>
+      <label>Select a Stock:</label>
+      <select onChange={handleStockChange} value={selectedStock}>
+        <option value="">Choose a stock</option>
+        {stockList.map((stock) => (
+          <option key={stock} value={stock}>{stock}</option>
+        ))}
+      </select>
+    </div>
   );
 };
 
