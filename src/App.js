@@ -1,59 +1,60 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import StockChart from "./components/StockChart"; // ✅ Ensure this exists
+import StockChart from "./components/StockChart";
 
 function App() {
-  const [stockList, setStockList] = useState([]);
-  const [selectedStock, setSelectedStock] = useState("");
+  const [ticker, setTicker] = useState("");
   const [prediction, setPrediction] = useState(null);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    console.log("Fetching available stocks...");
-    axios.get("https://investment-dashboard-backend-production-680a.up.railway.app/api/available_stocks")
-      .then((response) => {
-        console.log("Available stocks received:", response.data);
-        setStockList(response.data.stocks);
-      })
-      .catch((error) => {
-        console.error("Failed to load stocks", error);
-      });
-  }, []);
+  const handleInputChange = (event) => {
+    setTicker(event.target.value.toUpperCase());
+  };
 
-  const handleStockChange = (event) => {
-    const ticker = event.target.value;
-    setSelectedStock(ticker);
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    if (!ticker) {
+      setError("Please enter a ticker symbol.");
+      return;
+    }
+    setError("");
+    fetchStockData(ticker);
+  };
 
-    console.log(`Fetching stock analysis for ${ticker}...`);
-    axios.get(`https://investment-dashboard-backend-production-680a.up.railway.app/analyze?ticker=${ticker}`)
+  const fetchStockData = (ticker) => {
+    axios
+      .get(`https://investment-dashboard-backend-production-680a.up.railway.app/analyze?ticker=${ticker}`)
       .then((response) => {
         if (response.data.error) {
           setPrediction(null);
-          alert(`Error: ${response.data.error}`);
+          setError(response.data.error);
         } else {
-          console.log("Stock analysis received:", response.data);
           setPrediction(response.data.prediction);
+          setError("");
         }
       })
-      .catch((error) => console.error("Failed to fetch stock data", error));
+      .catch((error) => {
+        console.error("Failed to fetch stock data", error);
+        setError("An error occurred while fetching data.");
+      });
   };
 
   return (
     <div>
       <h1>QuantumVest AI Dashboard</h1>
 
-      {/* 🔥 Stock Dropdown Menu */}
-      <select onChange={handleStockChange} value={selectedStock}>
-        <option value="">Select a stock</option>
-        {stockList.length > 0 ? (
-          stockList.map((stock) => (
-            <option key={stock} value={stock}>{stock}</option>
-          ))
-        ) : (
-          <option disabled>Loading...</option>
-        )}
-      </select>
+      <form onSubmit={handleFormSubmit}>
+        <input
+          type="text"
+          value={ticker}
+          onChange={handleInputChange}
+          placeholder="Enter stock or crypto ticker"
+        />
+        <button type="submit">Analyze</button>
+      </form>
 
-      {/* 🔥 AI Predictions Display */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
       {prediction && (
         <div>
           <h3>Predicted Trend: {prediction.trend}</h3>
@@ -69,8 +70,7 @@ function App() {
         </div>
       )}
 
-      {/* 🔥 Stock Price Chart */}
-      {selectedStock && <StockChart ticker={selectedStock} />}
+      {prediction && <StockChart ticker={ticker} />}
     </div>
   );
 }
