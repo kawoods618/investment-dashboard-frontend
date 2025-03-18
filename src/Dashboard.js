@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
@@ -8,25 +8,30 @@ import TradingViewWidget from "./TradingViewWidget";
 const API_URL = process.env.REACT_APP_API_URL || "https://investment-dashboard-backend-production.up.railway.app";
 
 export default function Dashboard() {
-    const [ticker, setTicker] = useState("AAPL");
+    const [ticker, setTicker] = useState(""); // Empty input for flexibility
+    const [selectedTicker, setSelectedTicker] = useState("AAPL"); // Default ticker
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [prediction, setPrediction] = useState(null);
-    const [recommendation, setRecommendation] = useState(null);
 
-    const fetchStockData = async () => {
-        if (!ticker) return; // Prevent API calls if no ticker is entered
+    const fetchStockData = async (tickerToFetch) => {
+        if (!tickerToFetch.trim()) return; // Prevent empty queries
         setLoading(true);
         try {
-            const response = await axios.get(`${API_URL}/analyze?ticker=${ticker}`);
+            const response = await axios.get(`${API_URL}/analyze?ticker=${tickerToFetch}`);
             setData(response.data.market_data);
             setPrediction(response.data.prediction);
-            setRecommendation(response.data.recommendation);
         } catch (error) {
             console.error("Error fetching stock data:", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleAnalyzeClick = () => {
+        if (!ticker.trim()) return; // Avoid sending empty ticker
+        setSelectedTicker(ticker); // Update displayed ticker
+        fetchStockData(ticker); // Fetch stock data
     };
 
     return (
@@ -42,26 +47,23 @@ export default function Dashboard() {
                             value={ticker}
                             onChange={(e) => setTicker(e.target.value.toUpperCase())}
                         />
-                        <Button onClick={fetchStockData} disabled={loading}>
+                        <Button onClick={handleAnalyzeClick} disabled={loading}>
                             {loading ? "Loading..." : "Analyze"}
                         </Button>
                     </div>
 
-                    <TradingViewWidget symbol={ticker} />
+                    {/* Trading Chart */}
+                    <TradingViewWidget symbol={selectedTicker} />
 
+                    {/* Display AI Predictions */}
                     {prediction && (
-                        <div>
-                            <h3 className="text-lg font-semibold mt-4">Stock Prediction</h3>
-                            <p>Trend: {prediction.trend}</p>
-                            <p>Confidence: {prediction.confidence}</p>
-                        </div>
-                    )}
-
-                    {recommendation && (
-                        <div>
-                            <h3 className="text-lg font-semibold mt-4">Investment Recommendation</h3>
-                            <p>Rating: {recommendation.rating}</p>
-                            <p>Reason: {recommendation.reason}</p>
+                        <div className="mt-4 p-4 border rounded-lg bg-gray-100 shadow">
+                            <h3 className="text-lg font-semibold">AI Stock Prediction</h3>
+                            <p><strong>Trend:</strong> {prediction.trend}</p>
+                            <p><strong>Predicted Price:</strong> ${prediction.predicted_price}</p>
+                            <p><strong>Best Buy Date:</strong> {prediction.best_buy_date}</p>
+                            <p><strong>Best Sell Date:</strong> {prediction.best_sell_date}</p>
+                            <p><strong>Probability of Success:</strong> {prediction.probability_of_success}</p>
                         </div>
                     )}
                 </CardContent>
