@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
   const [stockList, setStockList] = useState([]);
@@ -6,12 +7,11 @@ function App() {
   const [prediction, setPrediction] = useState(null);
   const [chartData, setChartData] = useState([]);
 
-  // 🔥 Fetch available stock options from the backend
+  // 🔥 Fetch available stock options from backend
   useEffect(() => {
-    fetch("https://investment-dashboard-backend-production.up.railway.app/api/available_stocks")
-      .then((res) => res.json())
-      .then((data) => setStockList(data.stocks))
-      .catch((err) => console.error("Failed to load stocks", err));
+    axios.get("https://investment-dashboard-backend-production.up.railway.app/api/available_stocks")
+      .then((response) => setStockList(response.data.stocks))
+      .catch((error) => console.error("Failed to load stocks", error));
   }, []);
 
   // 🔥 Handle stock selection and fetch analysis
@@ -19,25 +19,24 @@ function App() {
     const ticker = event.target.value;
     setSelectedStock(ticker);
 
-    fetch(`https://investment-dashboard-backend-production.up.railway.app/analyze?ticker=${ticker}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
+    axios.get(`https://investment-dashboard-backend-production.up.railway.app/analyze?ticker=${ticker}`)
+      .then((response) => {
+        if (response.data.error) {
           setPrediction(null);
           setChartData([]);
-          alert(`Error: ${data.error}`);
+          alert(`Error: ${response.data.error}`);
         } else {
-          setPrediction(data.prediction);
-          setChartData(data.market_data);
+          setPrediction(response.data.prediction);
+          setChartData(response.data.market_data);
         }
       })
-      .catch((err) => console.error("Failed to fetch stock data", err));
+      .catch((error) => console.error("Failed to fetch stock data", error));
   };
 
   return (
     <div>
       <h1>QuantumVest AI Dashboard</h1>
-      
+
       {/* 🔥 Stock Dropdown Menu */}
       <select onChange={handleStockChange} value={selectedStock}>
         <option value="">Select a stock</option>
