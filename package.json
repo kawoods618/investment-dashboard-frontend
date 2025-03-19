@@ -14,8 +14,9 @@
     "cors": "^2.8.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --disable-host-check --no-client",
     "build": "react-scripts build",
     "test": "react-scripts test"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
