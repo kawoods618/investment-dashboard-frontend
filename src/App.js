@@ -12,6 +12,7 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [news, setNews] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false); // ✅ Track if the user has searched
 
   useEffect(() => {
     if (ticker.length >= 2) {
@@ -37,6 +38,7 @@ function App() {
 
     setLoading(true);
     setError("");
+    setHasSearched(true); // ✅ Now the user has searched, allow displaying results
 
     try {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
@@ -61,7 +63,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="title">QuantumVest AI Dashboard</h1>
+      <h1 className="title">QuantumVest AI</h1>
 
       <div className="input-section">
         <input
@@ -79,7 +81,7 @@ function App() {
       {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      {prediction && (
+      {hasSearched && prediction && (
         <div className="prediction-box">
           <h3 className="prediction-title">Predicted Trend: {prediction.trend || "N/A"}</h3>
           <h4 className="prediction-advice">Investment Advice: {prediction.advice || "N/A"}</h4>
@@ -99,9 +101,9 @@ function App() {
         </div>
       )}
 
-      {chartData.length > 0 && <StockChart data={chartData} />}
+      {hasSearched && chartData.length > 0 && <StockChart data={chartData} />}
 
-      {news.length > 0 ? (
+      {hasSearched && news.length > 0 ? (
         <div className="news-section">
           <h3>📢 Market News & Insights</h3>
           <ul className="news-list">
@@ -112,9 +114,9 @@ function App() {
             ))}
           </ul>
         </div>
-      ) : (
+      ) : hasSearched && news.length === 0 ? (
         <p className="no-news">📢 No recent financial news available for {ticker}.</p>
-      )}
+      ) : null}
     </div>
   );
 }
