@@ -11,27 +11,21 @@ function App() {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [news, setNews] = useState([]);
-
-  useEffect(() => {
-    if (ticker.length >= 2) {
-      fetchStockData(ticker);
-    }
-  }, [ticker]);
+  const [summary, setSummary] = useState("");
 
   const handleInputChange = (event) => {
     const value = event.target.value.toUpperCase();
     if (/^[A-Z0-9]*$/.test(value)) {
       setTicker(value);
-      setError(""); // ✅ Clear error when input is valid
+      setError(""); // ✅ Clear errors when input is valid
     } else {
       setError("Invalid ticker format. Use only letters and numbers.");
     }
   };
 
-  const fetchStockData = async (ticker) => {
+  const fetchStockData = async () => {
     if (ticker.length < 2) {
-      setError("Please enter a valid ticker symbol.");
+      setError("Enter a valid stock or crypto ticker.");
       return;
     }
 
@@ -44,22 +38,22 @@ function App() {
       if (response.status === 404) {
         setPrediction(null);
         setChartData([]);
-        setNews([]);
-        setError(`No stock data found for ${ticker}. Try another ticker.`);
+        setSummary("");
+        setError(`No stock or crypto data found for ${ticker}. Try another ticker.`);
         return;
       }
 
       if (!response.data || response.data.error) {
         setPrediction(null);
         setChartData([]);
-        setNews([]);
+        setSummary("");
         setError(response.data?.error || "No data found.");
         return;
       }
 
       setPrediction(response.data.prediction);
       setChartData(response.data.market_data || []);
-      setNews(response.data.prediction.financial_news || []);
+      setSummary(response.data.prediction.investment_summary || "");
     } catch (error) {
       setError("Error fetching data. Please try again.");
     } finally {
@@ -79,7 +73,7 @@ function App() {
           placeholder="Enter stock or crypto ticker"
           className="ticker-input"
         />
-        <button onClick={() => fetchStockData(ticker)} className="analyze-button">
+        <button onClick={fetchStockData} className="analyze-button">
           Analyze
         </button>
       </div>
@@ -95,9 +89,9 @@ function App() {
 
           <h4>Predicted Prices:</h4>
           <ul className="predicted-prices">
-            <li>📊 <strong>Next Day:</strong> ${prediction.predicted_prices?.next_day || "N/A"}</li>
-            <li>📈 <strong>Next Week:</strong> ${prediction.predicted_prices?.next_week || "N/A"}</li>
-            <li>📉 <strong>Next Month:</strong> ${prediction.predicted_prices?.next_month || "N/A"}</li>
+            <li>📊 <strong>Next Day ({prediction.predicted_prices.next_day.date}):</strong> ${prediction.predicted_prices.next_day.price || "N/A"}</li>
+            <li>📈 <strong>Next 7 Days ({prediction.predicted_prices.next_7_days.date}):</strong> ${prediction.predicted_prices.next_7_days.price || "N/A"}</li>
+            <li>📉 <strong>Next 30 Days ({prediction.predicted_prices.next_30_days.date}):</strong> ${prediction.predicted_prices.next_30_days.price || "N/A"}</li>
           </ul>
 
           <h4>Optimal Trading Strategy:</h4>
@@ -109,17 +103,10 @@ function App() {
 
       {chartData.length > 0 && <StockChart data={chartData} />}
 
-      {/* ✅ Hide news section if no valid ticker is searched */}
-      {news.length > 0 && ticker.length >= 2 && (
-        <div className="news-section">
-          <h3>📢 Market News & Insights</h3>
-          <ul className="news-list">
-            {news.map((article, index) => (
-              <li key={index}>
-                <strong>{article.title}</strong>: {article.summary}
-              </li>
-            ))}
-          </ul>
+      {summary && (
+        <div className="summary-section">
+          <h3>📢 AI Investment Summary</h3>
+          <p>{summary}</p>
         </div>
       )}
     </div>
