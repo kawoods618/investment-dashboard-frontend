@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+mport React, { useState, useEffect } from "react";
 import axios from "axios";
 import StockChart from "./components/StockChart";
 import "./App.css"; // ✅ Import styles
@@ -109,4 +109,3 @@ function App() {
           <p>{summary}</p>
         </div>
       )}
-    </div>
