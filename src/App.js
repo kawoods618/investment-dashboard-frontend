@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StockChart from "./components/StockChart";
-import { Card } from "@/components/ui/card";
 
 function App() {
   const [ticker, setTicker] = useState("");
@@ -36,7 +35,7 @@ function App() {
           setError("");
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
         setError("Error fetching data.");
       });
@@ -44,7 +43,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>QuantumVest AI Dashboard</h1>
+      <h1>QuantumVest AI</h1>
 
       <input
         type="text"
@@ -58,7 +57,7 @@ function App() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {prediction && (
-        <Card>
+        <div className="prediction-box">
           <h3>Predicted Trend: {prediction.trend}</h3>
           <h4>Investment Advice: {prediction.advice}</h4>
           <h4>Confidence: {prediction.confidence}</h4>
@@ -66,6 +65,20 @@ function App() {
           <ul>
             {prediction.predicted_prices.map((price, index) => (
               <li key={index}>Day {index + 1}: ${price}</li>
+            ))}
+          </ul>
+          <p>Best Buy Date: {prediction.best_buy_date}</p>
+          <p>Best Sell Date: {prediction.best_sell_date}</p>
+        </div>
+      )}
+
+      {chartData.length > 0 && <StockChart data={chartData} />}
+    </div>
+  );
+}
+
+export default App;
+
             ))}
           </ul>
           <p>Best Buy Date: {prediction.best_buy_date}</p>
