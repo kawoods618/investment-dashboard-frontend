@@ -1,40 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import "chart.js/auto";
+import React from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import "./StockChart.css"; // ✅ Import the new CSS styles
 
 const StockChart = ({ data }) => {
-  const [chartData, setChartData] = useState(null);
-
-  useEffect(() => {
-    if (!data || data.length === 0) {
-      setChartData(null);
-      return;
-    }
-
-    // Prepare data for Chart.js
-    const formattedData = {
-      labels: data.map((point) => point.Date),
-      datasets: [
-        {
-          label: "Stock Price (Close)",
-          data: data.map((point) => point.Close),
-          borderColor: "blue",
-          borderWidth: 2,
-          fill: false,
-        },
-      ],
-    };
-
-    setChartData(formattedData);
-  }, [data]);
-
-  if (!chartData) {
-    return <p style={{ color: "red" }}>No stock data available for this ticker.</p>;
-  }
-
   return (
-    <div>
-      <h2>Stock Price Chart</h2>
+    <div className="chart-container">
+      <h2 className="chart-title">📈 Stock Price Chart</h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart data={data}>
+          {/* ✅ Gridlines for modern look */}
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.2)" />
+          <XAxis dataKey="Date" stroke="#AAAAAA" />
+          <YAxis stroke="#AAAAAA" />
+          <Tooltip contentStyle={{ backgroundColor: "#222", color: "#fff" }} />
+          
+          {/* ✅ Actual Stock Prices (Glowing Blue Line) */}
+          <Line type="monotone" dataKey="Close" stroke="#00d4ff" strokeWidth={3} dot={false} />
+
+          {/* ✅ AI Predictions Overlay (Glowing Purple Line) */}
+          <Line type="monotone" dataKey="PredictedPrice" stroke="#ff00ff" strokeWidth={3} strokeDasharray="5 5" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export default StockChart;
+
       <Line data={chartData} />
     </div>
   );
