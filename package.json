@@ -14,7 +14,7 @@
     "cors": "^2.8.5"
   },
   "scripts": {
-    "start": "react-scripts start --disable-host-check --no-client",
+    "start": "HOST=0.0.0.0 WDS_SOCKET_PORT=0 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test"
   },
