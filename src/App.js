@@ -1,144 +1,119 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import yfinance as yf
-import pandas as pd
-import numpy as np
-import requests
-from transformers import pipeline
-from prophet import Prophet
-from datetime import datetime, timedelta
-import logging
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import StockChart from "./components/StockChart";
+import "./App.css";
 
-# Initialize Flask App
-app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-logging.basicConfig(level=logging.DEBUG)
+const BASE_URL = "https://investment-dashboard-backend-production.up.railway.app/api";
 
-# API Constants
-COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
-GPT_SUMMARY_MODEL = pipeline("summarization", model="facebook/bart-large-cnn")  # ✅ Set model version explicitly
+function App() {
+  const [ticker, setTicker] = useState("");
+  const [prediction, setPrediction] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [news, setNews] = useState("");
 
-# Fetch Valid Stock & Crypto Tickers (Cached)
-def get_valid_stock_tickers():
-    try:
-        url = "https://api.nasdaq.com/api/screener/stocks"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(url, headers=headers)
-        data = response.json()
-        tickers = {stock["symbol"] for stock in data.get("data", {}).get("rows", [])}
-        logging.info(f"Loaded {len(tickers)} stock tickers")
-        logging.debug(f"Sample tickers: {list(tickers)[:10]}")
-        return tickers
-    except Exception as e:
-        logging.error(f"Error fetching stock tickers: {e}")
-        return {"AAPL", "TSLA", "GOOG", "MSFT", "AMZN"}  # ✅ Fallback tickers
+  useEffect(() => {
+    if (ticker.length >= 2) {
+      fetchStockData();
+    } else {
+      setError(""); // ✅ Clear error if input is less than 2 characters
+    }
+  }, [ticker]);
 
-def get_valid_crypto_tickers():
-    try:
-        response = requests.get(f"{COINGECKO_API_URL}/coins/list")
-        return {coin["symbol"].upper(): coin["id"] for coin in response.json()}
-    except Exception as e:
-        logging.error(f"Error fetching crypto tickers: {e}")
-        return {}
+  const handleInputChange = (event) => {
+    const value = event.target.value.toUpperCase();
+    if (/^[A-Z0-9]*$/.test(value)) {
+      setTicker(value);
+      setError("");
+    } else {
+      setError("Invalid ticker format. Use only letters and numbers.");
+    }
+  };
 
-VALID_STOCK_TICKERS = get_valid_stock_tickers()
-VALID_CRYPTO_TICKERS = get_valid_crypto_tickers()
+  const fetchStockData = async () => {
+    if (ticker.length < 2) {
+      return; // ✅ Prevent error message from showing when typing only one letter
+    }
 
-# Fetch Market Data
-def fetch_stock_data(ticker):
-    try:
-        if ticker not in VALID_STOCK_TICKERS:
-            logging.error(f"Ticker {ticker} is not recognized in valid stock tickers.")
-            return None
+    setLoading(true);
+    setError("");
 
-        logging.info(f"Fetching stock data for {ticker}")
-        stock = yf.Ticker(ticker)
-        hist = stock.history(period="6mo", interval="1d", auto_adjust=True)
+    try {
+      const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
 
-        if hist.empty:
-            logging.warning(f"No data found for {ticker}")
-            return None
+      if (!response.data || response.data.error) {
+        setPrediction(null);
+        setChartData([]);
+        setNews("");
+        setError(response.data?.error || `No stock data found for ${ticker}. Try another ticker.`);
+        return;
+      }
 
-        hist.reset_index(inplace=True)
-        hist["Date"] = hist["Date"].dt.strftime("%Y-%m-%d")
-        return hist[["Date", "Open", "High", "Low", "Close", "Volume"]]
-    except Exception as e:
-        logging.error(f"Error fetching stock data for {ticker}: {e}")
-        return None
+      setPrediction(response.data.prediction);
+      setChartData(response.data.market_data || []);
+      setNews(response.data.prediction?.summary || ""); // ✅ Updated from investment_summary to summary
+    } catch (error) {
+      setError("Error fetching data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-def fetch_crypto_data(ticker):
-    try:
-        crypto_id = VALID_CRYPTO_TICKERS.get(ticker.upper())
-        if not crypto_id:
-            return None
-        url = f"{COINGECKO_API_URL}/coins/{crypto_id}/market_chart?vs_currency=usd&days=180"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            prices = data["prices"]
-            hist = pd.DataFrame(prices, columns=["timestamp", "price"])
-            hist["Date"] = pd.to_datetime(hist["timestamp"], unit='ms').dt.strftime("%Y-%m-%d")
-            hist.rename(columns={"price": "Close"}, inplace=True)
-            hist["Open"] = hist["High"] = hist["Low"] = hist["Close"]
-            hist["Volume"] = 0
-            return hist[["Date", "Open", "High", "Low", "Close", "Volume"]]
-    except Exception as e:
-        logging.error(f"Error fetching crypto data for {ticker}: {e}")
-    return None
+  return (
+    <div className="container">
+      <h1 className="title">QuantumVest AI</h1>
 
-def get_market_data(ticker):
-    return fetch_crypto_data(ticker) or fetch_stock_data(ticker)
+      <div className="input-section">
+        <input
+          type="text"
+          value={ticker}
+          onChange={handleInputChange}
+          placeholder="Enter stock or crypto ticker"
+          className="ticker-input"
+        />
+        <button onClick={fetchStockData} className="analyze-button" disabled={ticker.length < 2}>
+          Analyze
+        </button>
+      </div>
 
-# AI-Based Price Prediction
-def predict_prices(df):
-    if df is None or df.empty:
-        return None
-    df["ds"] = pd.to_datetime(df["Date"])
-    df["y"] = df["Close"]
-    model = Prophet()
-    model.fit(df[["ds", "y"]])
-    future = model.make_future_dataframe(periods=30)
-    forecast = model.predict(future)
-    return forecast.set_index("ds")["yhat"]
+      {loading && <p className="loading-text">Loading...</p>}
+      {error && <p className="error-text">{error}</p>}
 
-def generate_summary(ticker):
-    try:
-        input_text = f"Summarize financial trends for {ticker}."
-        summary = GPT_SUMMARY_MODEL(input_text, max_length=150, min_length=50, do_sample=False)
-        return summary[0]["summary_text"]
-    except Exception:
-        return "No summary available."
+      {prediction && (
+        <div className="prediction-box">
+          <h3 className="prediction-title">Predicted Trend: {prediction?.trend ?? "N/A"}</h3>
+          <h4 className="prediction-advice">Investment Advice: {prediction?.advice ?? "N/A"}</h4>
+          <h4>Confidence: {prediction?.confidence ?? "N/A"}</h4>
 
-@app.route("/api/analyze", methods=["GET"])
-def analyze():
-    ticker = request.args.get("ticker", "").upper()
-    logging.debug(f"Received request for ticker: {ticker}")
-    if not ticker or len(ticker) < 2:
-        return jsonify({"error": "Invalid ticker input."}), 400
-    try:
-        hist = get_market_data(ticker)
-        if hist is None or hist.empty:
-            return jsonify({"error": f"No data found for {ticker}."}), 404
-        current_price = hist["Close"].iloc[-1]
-        predicted_prices = predict_prices(hist)
-        summary = generate_summary(ticker)
-        return jsonify({
-            "ticker": ticker,
-            "market_data": hist.to_dict(orient="records"),
-            "prediction": {
-                "current_price": round(current_price, 2),
-                "next_day": round(predicted_prices.iloc[-30], 2) if predicted_prices is not None else None,
-                "next_7_days": round(predicted_prices.iloc[-23], 2) if predicted_prices is not None else None,
-                "next_30_days": round(predicted_prices.iloc[-1], 2) if predicted_prices is not None else None,
-                "probability_of_success": "85%",
-                "summary": summary
-            }
-        })
-    except Exception as e:
-        logging.error(f"Error processing {ticker}: {e}")
-        return jsonify({"error": "Server error. Try again later."}), 500
+          <h4>Predicted Prices:</h4>
+          <ul className="predicted-prices">
+            <li>📊 <strong>Next Day:</strong> ${prediction?.next_day ?? "N/A"}</li>
+            <li>📈 <strong>Next Week:</strong> ${prediction?.next_7_days ?? "N/A"}</li>
+            <li>📉 <strong>Next Month:</strong> ${prediction?.next_30_days ?? "N/A"}</li>
+          </ul>
 
-if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True)
+          <h4>Optimal Trading Strategy:</h4>
+          <p>✅ Best Buy Price: <strong>${prediction?.best_buy_price ?? "N/A"}</strong> (Date: {prediction?.best_buy_date ?? "N/A"})</p>
+          <p>📈 Best Sell Price: <strong>${prediction?.best_sell_price ?? "N/A"}</strong> (Date: {prediction?.best_sell_date ?? "N/A"})</p>
+          <p>📊 Probability of Success: <strong>{prediction?.probability_of_success ?? "N/A"}</strong></p>
+        </div>
+      )}
+
+      {chartData.length > 0 && (
+        <div className="stock-chart-container">
+          <StockChart data={chartData} />
+        </div>
+      )}
+
+      {news && (
+        <div className="news-section">
+          <h3>📢 AI Market Summary</h3>
+          <p>{news}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
