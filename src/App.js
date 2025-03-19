@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StockChart from "./components/StockChart";
+import "./App.css"; // ✅ Import for professional styling
+
+const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
 
 function App() {
   const [ticker, setTicker] = useState("");
@@ -8,6 +11,7 @@ function App() {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [news, setNews] = useState([]);
 
   useEffect(() => {
     if (ticker) {
@@ -22,16 +26,18 @@ function App() {
   const fetchStockData = (ticker) => {
     setLoading(true);
     axios
-      .get(`https://investment-dashboard-backend-production-680a.up.railway.app/api/analyze?ticker=${ticker}`)
+      .get(`${BASE_URL}/analyze?ticker=${ticker}`)
       .then((response) => {
         setLoading(false);
         if (response.data.error) {
           setPrediction(null);
           setChartData([]);
+          setNews([]);
           setError(response.data.error);
         } else {
           setPrediction(response.data.prediction);
           setChartData(response.data.market_data);
+          setNews(response.data.prediction.financial_news);
           setError("");
         }
       })
@@ -43,36 +49,58 @@ function App() {
 
   return (
     <div className="container">
-      <h1>QuantumVest AI Dashboard</h1>
+      <h1 className="title">QuantumVest AI Dashboard</h1>
 
-      <input
-        type="text"
-        value={ticker}
-        onChange={handleInputChange}
-        placeholder="Enter stock or crypto ticker"
-      />
-      <button onClick={() => fetchStockData(ticker)}>Analyze</button>
+      <div className="input-section">
+        <input
+          type="text"
+          value={ticker}
+          onChange={handleInputChange}
+          placeholder="Enter stock or crypto ticker"
+          className="ticker-input"
+        />
+        <button onClick={() => fetchStockData(ticker)} className="analyze-button">
+          Analyze
+        </button>
+      </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && <p className="loading-text">Loading...</p>}
+      {error && <p className="error-text">{error}</p>}
 
       {prediction && (
         <div className="prediction-box">
-          <h3>Predicted Trend: {prediction.trend}</h3>
-          <h4>Investment Advice: {prediction.advice}</h4>
+          <h3 className="prediction-title">Predicted Trend: {prediction.trend}</h3>
+          <h4 className="prediction-advice">Investment Advice: {prediction.advice}</h4>
           <h4>Confidence: {prediction.confidence}</h4>
-          <h4>Predicted Prices (Next 7 Days):</h4>
-          <ul>
-            {prediction.predicted_prices.map((price, index) => (
-              <li key={index}>Day {index + 1}: ${price}</li>
-            ))}
+
+          <h4>Predicted Prices:</h4>
+          <ul className="predicted-prices">
+            <li>📊 <strong>Next Day:</strong> ${prediction.predicted_prices.next_day}</li>
+            <li>📈 <strong>Next Week:</strong> ${prediction.predicted_prices.next_week}</li>
+            <li>📉 <strong>Next Month:</strong> ${prediction.predicted_prices.next_month}</li>
           </ul>
-          <p>Best Buy Date: {prediction.best_buy_date}</p>
-          <p>Best Sell Date: {prediction.best_sell_date}</p>
+
+          <h4>Optimal Trading Strategy:</h4>
+          <p>✅ Best Buy Price: <strong>${prediction.best_buy_price}</strong> (Date: {prediction.best_buy_date})</p>
+          <p>📈 Best Sell Price: <strong>${prediction.best_sell_price}</strong> (Date: {prediction.best_sell_date})</p>
+          <p>📊 Probability of Success: <strong>{prediction.probability_of_success}</strong></p>
         </div>
       )}
 
       {chartData.length > 0 && <StockChart data={chartData} />}
+
+      {news.length > 0 && (
+        <div className="news-section">
+          <h3>📢 Market News & Insights</h3>
+          <ul className="news-list">
+            {news.map((article, index) => (
+              <li key={index}>
+                <strong>{article.title}</strong>: {article.summary}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
