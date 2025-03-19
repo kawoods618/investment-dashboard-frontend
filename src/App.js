@@ -32,8 +32,8 @@ function App() {
   };
 
   const fetchStockData = async () => {
-    if (ticker.length < 2) {
-      return; // ✅ Prevent error message from showing when typing only one letter
+    if (!ticker) {
+      return; // ✅ Prevent fetching if ticker is empty
     }
 
     setLoading(true);
@@ -72,7 +72,7 @@ function App() {
           placeholder="Enter stock or crypto ticker"
           className="ticker-input"
         />
-        <button onClick={fetchStockData} className="analyze-button" disabled={ticker.length < 2}>
+        <button onClick={fetchStockData} className="analyze-button" disabled={!ticker}>
           Analyze
         </button>
       </div>
