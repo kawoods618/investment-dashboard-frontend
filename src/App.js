@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StockChart from "./components/StockChart";
-import "./App.css"; // ✅ Import for professional styling
+import "./App.css"; // ✅ Import styles
 
 const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
 
@@ -14,32 +14,45 @@ function App() {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    if (ticker) {
+    if (ticker.length > 1) {
       fetchStockData(ticker);
     }
   }, [ticker]);
 
   const handleInputChange = (event) => {
-    setTicker(event.target.value.toUpperCase());
+    const value = event.target.value.toUpperCase();
+    if (/^[A-Z0-9]*$/.test(value)) {  // ✅ Only allow valid ticker characters
+      setTicker(value);
+    } else {
+      setError("Invalid ticker format. Use only letters and numbers.");
+    }
   };
 
   const fetchStockData = (ticker) => {
+    if (ticker.length < 2) {
+      setError("Please enter at least 2 characters.");
+      return;
+    }
+
     setLoading(true);
+    setError("");
+
     axios
       .get(`${BASE_URL}/analyze?ticker=${ticker}`)
       .then((response) => {
         setLoading(false);
-        if (response.data.error) {
+
+        if (!response.data || response.data.error) {
           setPrediction(null);
           setChartData([]);
           setNews([]);
-          setError(response.data.error);
-        } else {
-          setPrediction(response.data.prediction);
-          setChartData(response.data.market_data);
-          setNews(response.data.prediction.financial_news);
-          setError("");
+          setError(response.data?.error || "No data found.");
+          return;
         }
+
+        setPrediction(response.data.prediction);
+        setChartData(response.data.market_data || []);
+        setNews(response.data.prediction.financial_news || []);
       })
       .catch(() => {
         setLoading(false);
@@ -69,21 +82,21 @@ function App() {
 
       {prediction && (
         <div className="prediction-box">
-          <h3 className="prediction-title">Predicted Trend: {prediction.trend}</h3>
-          <h4 className="prediction-advice">Investment Advice: {prediction.advice}</h4>
-          <h4>Confidence: {prediction.confidence}</h4>
+          <h3 className="prediction-title">Predicted Trend: {prediction.trend || "N/A"}</h3>
+          <h4 className="prediction-advice">Investment Advice: {prediction.advice || "N/A"}</h4>
+          <h4>Confidence: {prediction.confidence || "N/A"}</h4>
 
           <h4>Predicted Prices:</h4>
           <ul className="predicted-prices">
-            <li>📊 <strong>Next Day:</strong> ${prediction.predicted_prices.next_day}</li>
-            <li>📈 <strong>Next Week:</strong> ${prediction.predicted_prices.next_week}</li>
-            <li>📉 <strong>Next Month:</strong> ${prediction.predicted_prices.next_month}</li>
+            <li>📊 <strong>Next Day:</strong> ${prediction.predicted_prices?.next_day || "N/A"}</li>
+            <li>📈 <strong>Next Week:</strong> ${prediction.predicted_prices?.next_week || "N/A"}</li>
+            <li>📉 <strong>Next Month:</strong> ${prediction.predicted_prices?.next_month || "N/A"}</li>
           </ul>
 
           <h4>Optimal Trading Strategy:</h4>
-          <p>✅ Best Buy Price: <strong>${prediction.best_buy_price}</strong> (Date: {prediction.best_buy_date})</p>
-          <p>📈 Best Sell Price: <strong>${prediction.best_sell_price}</strong> (Date: {prediction.best_sell_date})</p>
-          <p>📊 Probability of Success: <strong>{prediction.probability_of_success}</strong></p>
+          <p>✅ Best Buy Price: <strong>${prediction.best_buy_price || "N/A"}</strong> (Date: {prediction.best_buy_date || "N/A"})</p>
+          <p>📈 Best Sell Price: <strong>${prediction.best_sell_price || "N/A"}</strong> (Date: {prediction.best_sell_date || "N/A"})</p>
+          <p>📊 Probability of Success: <strong>{prediction.probability_of_success || "N/A"}</strong></p>
         </div>
       )}
 
@@ -106,3 +119,4 @@ function App() {
 }
 
 export default App;
+
