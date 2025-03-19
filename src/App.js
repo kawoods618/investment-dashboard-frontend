@@ -12,7 +12,6 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [news, setNews] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false); // ✅ Track if the user has searched
 
   useEffect(() => {
     if (ticker.length >= 2) {
@@ -38,16 +37,23 @@ function App() {
 
     setLoading(true);
     setError("");
-    setHasSearched(true); // ✅ Now the user has searched, allow displaying results
 
     try {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
 
-      if (response.status === 404 || !response.data || response.data.error) {
+      if (response.status === 404) {
         setPrediction(null);
         setChartData([]);
         setNews([]);
-        setError(response.data?.error || `No stock data found for ${ticker}. Try another ticker.`);
+        setError(`No stock data found for ${ticker}. Try another ticker.`);
+        return;
+      }
+
+      if (!response.data || response.data.error) {
+        setPrediction(null);
+        setChartData([]);
+        setNews([]);
+        setError(response.data?.error || "No data found.");
         return;
       }
 
@@ -81,7 +87,7 @@ function App() {
       {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      {hasSearched && prediction && (
+      {prediction && (
         <div className="prediction-box">
           <h3 className="prediction-title">Predicted Trend: {prediction.trend || "N/A"}</h3>
           <h4 className="prediction-advice">Investment Advice: {prediction.advice || "N/A"}</h4>
@@ -101,22 +107,21 @@ function App() {
         </div>
       )}
 
-      {hasSearched && chartData.length > 0 && <StockChart data={chartData} />}
+      {chartData.length > 0 && <StockChart data={chartData} />}
 
-      {hasSearched && news.length > 0 ? (
+      {/* ✅ Hide news section if no valid ticker is searched */}
+      {news.length > 0 && ticker.length >= 2 && (
         <div className="news-section">
           <h3>📢 Market News & Insights</h3>
           <ul className="news-list">
             {news.map((article, index) => (
               <li key={index}>
-                <strong>{article.title || "No Title Available"}</strong>: {article.summary || "No summary available."}
+                <strong>{article.title}</strong>: {article.summary}
               </li>
             ))}
           </ul>
         </div>
-      ) : hasSearched && news.length === 0 ? (
-        <p className="no-news">📢 No recent financial news available for {ticker}.</p>
-      ) : null}
+      )}
     </div>
   );
 }
