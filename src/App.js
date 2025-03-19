@@ -23,12 +23,13 @@ function App() {
     const value = event.target.value.toUpperCase();
     if (/^[A-Z0-9]*$/.test(value)) {  // ✅ Only allow valid ticker characters
       setTicker(value);
+      setError(""); // ✅ Clear previous errors when input is corrected
     } else {
       setError("Invalid ticker format. Use only letters and numbers.");
     }
   };
 
-  const fetchStockData = (ticker) => {
+  const fetchStockData = async (ticker) => {
     if (ticker.length < 2) {
       setError("Please enter at least 2 characters.");
       return;
@@ -37,27 +38,25 @@ function App() {
     setLoading(true);
     setError("");
 
-    axios
-      .get(`${BASE_URL}/analyze?ticker=${ticker}`)
-      .then((response) => {
-        setLoading(false);
+    try {
+      const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
 
-        if (!response.data || response.data.error) {
-          setPrediction(null);
-          setChartData([]);
-          setNews([]);
-          setError(response.data?.error || "No data found.");
-          return;
-        }
+      if (!response.data || response.data.error) {
+        setPrediction(null);
+        setChartData([]);
+        setNews([]);
+        setError(response.data?.error || "No data found.");
+        return;
+      }
 
-        setPrediction(response.data.prediction);
-        setChartData(response.data.market_data || []);
-        setNews(response.data.prediction.financial_news || []);
-      })
-      .catch(() => {
-        setLoading(false);
-        setError("Error fetching data.");
-      });
+      setPrediction(response.data.prediction);
+      setChartData(response.data.market_data || []);
+      setNews(response.data.prediction.financial_news || []);
+    } catch (error) {
+      setError("Error fetching data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -119,4 +118,3 @@ function App() {
 }
 
 export default App;
-
