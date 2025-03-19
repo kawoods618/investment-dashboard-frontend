@@ -5,6 +5,7 @@ import StockChart from "./components/StockChart";
 function App() {
   const [ticker, setTicker] = useState("");
   const [prediction, setPrediction] = useState(null);
+  const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
 
   const handleInputChange = (event) => {
@@ -14,7 +15,7 @@ function App() {
   const handleFormSubmit = (event) => {
     event.preventDefault();
     if (!ticker) {
-      setError("Please enter a ticker symbol.");
+      setError("Please enter a valid stock or crypto ticker.");
       return;
     }
     setError("");
@@ -23,19 +24,20 @@ function App() {
 
   const fetchStockData = (ticker) => {
     axios
-      .get(`https://investment-dashboard-backend-production-680a.up.railway.app/analyze?ticker=${ticker}`)
+      .get(`https://investment-dashboard-backend-production-680a.up.railway.app/api/analyze?ticker=${ticker}`)
       .then((response) => {
         if (response.data.error) {
           setPrediction(null);
+          setChartData([]);
           setError(response.data.error);
         } else {
           setPrediction(response.data.prediction);
-          setError("");
+          setChartData(response.data.market_data);
         }
       })
       .catch((error) => {
         console.error("Failed to fetch stock data", error);
-        setError("An error occurred while fetching data.");
+        setError("Error fetching data. The ticker may not exist.");
       });
   };
 
@@ -43,6 +45,7 @@ function App() {
     <div>
       <h1>QuantumVest AI Dashboard</h1>
 
+      {/* 🔍 Input Ticker */}
       <form onSubmit={handleFormSubmit}>
         <input
           type="text"
@@ -53,8 +56,10 @@ function App() {
         <button type="submit">Analyze</button>
       </form>
 
+      {/* 🔴 Error Message */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
+      {/* 🔥 Predictions Display */}
       {prediction && (
         <div>
           <h3>Predicted Trend: {prediction.trend}</h3>
@@ -70,7 +75,8 @@ function App() {
         </div>
       )}
 
-      {prediction && <StockChart ticker={ticker} />}
+      {/* 📈 Stock Price Chart */}
+      {chartData.length > 0 && <StockChart data={chartData} />}
     </div>
   );
 }
