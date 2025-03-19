@@ -14,16 +14,16 @@ function App() {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    if (ticker.length > 1) {
+    if (ticker.length >= 2) {
       fetchStockData(ticker);
     }
   }, [ticker]);
 
   const handleInputChange = (event) => {
     const value = event.target.value.toUpperCase();
-    if (/^[A-Z0-9]*$/.test(value)) {  // ✅ Only allow valid ticker characters
+    if (/^[A-Z0-9]*$/.test(value)) {
       setTicker(value);
-      setError(""); // ✅ Clear previous errors when input is corrected
+      setError(""); // ✅ Clear error when input is valid
     } else {
       setError("Invalid ticker format. Use only letters and numbers.");
     }
@@ -31,7 +31,7 @@ function App() {
 
   const fetchStockData = async (ticker) => {
     if (ticker.length < 2) {
-      setError("Please enter at least 2 characters.");
+      setError("Please enter a valid ticker symbol.");
       return;
     }
 
@@ -40,6 +40,14 @@ function App() {
 
     try {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
+
+      if (response.status === 404) {
+        setPrediction(null);
+        setChartData([]);
+        setNews([]);
+        setError(`No stock data found for ${ticker}. Try another ticker.`);
+        return;
+      }
 
       if (!response.data || response.data.error) {
         setPrediction(null);
