@@ -43,7 +43,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>QuantumVest AI</h1>
+      <h1>QuantumVest AI Dashboard</h1>
 
       <input
         type="text"
@@ -70,20 +70,6 @@ function App() {
           <p>Best Buy Date: {prediction.best_buy_date}</p>
           <p>Best Sell Date: {prediction.best_sell_date}</p>
         </div>
-      )}
-
-      {chartData.length > 0 && <StockChart data={chartData} />}
-    </div>
-  );
-}
-
-export default App;
-
-            ))}
-          </ul>
-          <p>Best Buy Date: {prediction.best_buy_date}</p>
-          <p>Best Sell Date: {prediction.best_sell_date}</p>
-        </Card>
       )}
 
       {chartData.length > 0 && <StockChart data={chartData} />}
