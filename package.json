@@ -14,9 +14,8 @@
     "cors": "^2.8.5"
   },
   "scripts": {
-    "start": "HOST=0.0.0.0 PORT=8080 WDS_SOCKET_PORT=0 react-scripts start",
+    "start": "HOST=0.0.0.0 PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test"
-  },
-  "proxy": "http://localhost:8080"
+  }
 }
