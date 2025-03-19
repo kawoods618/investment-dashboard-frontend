@@ -1,0 +1,88 @@
+.container {
+  width: 80%;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.input-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ticker-input {
+  padding: 10px;
+  font-size: 16px;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.analyze-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.analyze-button:hover {
+  background-color: #0056b3;
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #666;
+}
+
+.error-text {
+  color: red;
+  font-size: 16px;
+}
+
+.prediction-box {
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.prediction-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.predicted-prices {
+  list-style-type: none;
+  padding: 0;
+}
+
+.predicted-prices li {
+  padding: 5px 0;
+}
+
+.news-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e3f2fd;
+  border-radius: 10px;
+}
+
+.news-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.news-list li {
+  padding: 5px 0;
+  font-size: 16px;
+}
