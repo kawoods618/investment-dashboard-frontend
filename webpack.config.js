@@ -6,10 +6,10 @@ module.exports = {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
-    hot: false,
-    liveReload: false,
+    hot: false,  // ✅ Disables Hot Module Reloading (HMR)
+    liveReload: false,  // ✅ Stops WebSocket connection attempts
     client: {
-      webSocketURL: false, // ✅ Disables WebSocket auto-reconnect
+      webSocketURL: false, // ✅ Fully disables WebSocket auto-reconnect
     },
   },
 };
