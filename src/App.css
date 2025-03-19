@@ -1,6 +1,6 @@
 /* 🎨 Global Styles */
 body {
-  background-color: #121212; /* Dark Mode */
+  background: linear-gradient(135deg, #0d0d0d, #1c1c1c);
   font-family: "Poppins", sans-serif;
   color: #eaeaea;
   text-align: center;
@@ -13,19 +13,31 @@ body {
   width: 85%;
   max-width: 900px;
   margin: 50px auto;
-  padding: 20px;
-  background: rgba(30, 30, 30, 0.85); /* Glassmorphism */
+  padding: 25px;
+  background: rgba(20, 20, 20, 0.9);
   border-radius: 15px;
-  box-shadow: 0px 5px 15px rgba(0, 123, 255, 0.3);
+  box-shadow: 0px 5px 25px rgba(0, 255, 204, 0.3);
+  transition: all 0.3s ease-in-out;
 }
 
 /* 🏆 Title Styling */
 .title {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 700;
-  color: #00ffcc; /* Futuristic Blue-Green */
-  text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.7);
-  margin-bottom: 20px;
+  color: #00ffcc;
+  text-shadow: 0px 0px 20px rgba(0, 255, 204, 0.8);
+  margin-bottom: 25px;
+  animation: glowTitle 1.5s infinite alternate;
+}
+
+/* 🔥 Title Glow Effect */
+@keyframes glowTitle {
+  from {
+    text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.6);
+  }
+  to {
+    text-shadow: 0px 0px 20px rgba(0, 255, 204, 1);
+  }
 }
 
 /* 🔎 Input Section */
@@ -39,39 +51,40 @@ body {
 
 /* 🎯 Ticker Input */
 .ticker-input {
-  width: 250px;
-  padding: 12px;
+  width: 280px;
+  padding: 14px;
   font-size: 18px;
   font-weight: 500;
   text-align: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border: 2px solid #00ffcc;
-  border-radius: 10px;
+  border-radius: 12px;
   color: white;
   transition: all 0.3s ease-in-out;
 }
 
 .ticker-input:focus {
   outline: none;
-  box-shadow: 0px 0px 12px #00ffcc;
+  box-shadow: 0px 0px 15px #00ffcc;
+  transform: scale(1.05);
 }
 
 /* ⚡ Analyze Button */
 .analyze-button {
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 14px 22px;
+  font-size: 18px;
+  font-weight: 700;
   background: linear-gradient(45deg, #007bff, #9b51e0);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
 .analyze-button:hover {
-  box-shadow: 0px 0px 15px #9b51e0;
-  transform: scale(1.05);
+  box-shadow: 0px 0px 20px #9b51e0;
+  transform: scale(1.08);
 }
 
 /* ⏳ Loading & Error Messages */
@@ -90,41 +103,53 @@ body {
 /* 📊 Prediction Box */
 .prediction-box {
   background: rgba(40, 40, 40, 0.95);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.1);
-  margin-top: 20px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.1);
+  margin-top: 25px;
   transition: all 0.3s ease-in-out;
 }
 
 .prediction-title {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 700;
   color: #00ffcc;
+  text-shadow: 0px 0px 15px rgba(0, 255, 204, 0.8);
 }
 
 /* 📈 Predicted Prices */
 .predicted-prices {
   list-style: none;
   padding: 0;
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
 .predicted-prices li {
   font-size: 18px;
-  background: rgba(0, 123, 255, 0.2);
-  padding: 8px;
-  border-radius: 8px;
-  margin: 5px 0;
+  background: rgba(0, 123, 255, 0.3);
+  padding: 10px;
+  border-radius: 10px;
+  margin: 6px 0;
+  transition: 0.3s;
+}
+
+.predicted-prices li:hover {
+  background: rgba(0, 123, 255, 0.5);
 }
 
 /* 📰 News Section */
 .news-section {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 12px;
-  background: rgba(50, 50, 50, 0.9);
-  box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.1);
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(50, 50, 50, 0.95);
+  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.15);
+}
+
+.news-section h3 {
+  font-size: 22px;
+  color: #00ffcc;
+  text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.7);
 }
 
 .news-list {
@@ -133,18 +158,38 @@ body {
 }
 
 .news-list li {
-  padding: 8px;
+  padding: 10px;
   font-size: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.news-list li:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.02);
 }
 
 /* 📊 Stock Chart Container */
 .stock-chart-container {
-  background: rgba(30, 30, 30, 0.9);
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 20px;
-  box-shadow: 0px 4px 12px rgba(0, 255, 204, 0.3);
+  background: rgba(30, 30, 30, 0.95);
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 25px;
+  box-shadow: 0px 4px 15px rgba(0, 255, 204, 0.4);
+}
+
+/* 🔥 Glassmorphism Hover Effect */
+@keyframes glassHover {
+  from {
+    background: rgba(40, 40, 40, 0.8);
+  }
+  to {
+    background: rgba(60, 60, 60, 0.95);
+  }
+}
+
+.prediction-box:hover, .news-section:hover, .stock-chart-container:hover {
+  animation: glassHover 0.3s forwards;
 }
 
 /* 🚀 Animations */
