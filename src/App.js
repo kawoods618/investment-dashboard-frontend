@@ -41,19 +41,11 @@ function App() {
     try {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
 
-      if (response.status === 404) {
+      if (response.status === 404 || !response.data || response.data.error) {
         setPrediction(null);
         setChartData([]);
         setNews([]);
-        setError(`No stock data found for ${ticker}. Try another ticker.`);
-        return;
-      }
-
-      if (!response.data || response.data.error) {
-        setPrediction(null);
-        setChartData([]);
-        setNews([]);
-        setError(response.data?.error || "No data found.");
+        setError(response.data?.error || `No stock data found for ${ticker}. Try another ticker.`);
         return;
       }
 
@@ -109,17 +101,19 @@ function App() {
 
       {chartData.length > 0 && <StockChart data={chartData} />}
 
-      {news.length > 0 && (
+      {news.length > 0 ? (
         <div className="news-section">
           <h3>📢 Market News & Insights</h3>
           <ul className="news-list">
             {news.map((article, index) => (
               <li key={index}>
-                <strong>{article.title}</strong>: {article.summary}
+                <strong>{article.title || "No Title Available"}</strong>: {article.summary || "No summary available."}
               </li>
             ))}
           </ul>
         </div>
+      ) : (
+        <p className="no-news">📢 No recent financial news available for {ticker}.</p>
       )}
     </div>
   );
