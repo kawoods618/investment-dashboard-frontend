@@ -1,88 +1,164 @@
-.container {
-  width: 80%;
-  margin: auto;
-  font-family: Arial, sans-serif;
+/* 🎨 Global Styles */
+body {
+  background-color: #121212; /* Dark Mode */
+  font-family: "Poppins", sans-serif;
+  color: #eaeaea;
   text-align: center;
-}
-
-.title {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.input-section {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.ticker-input {
-  padding: 10px;
-  font-size: 16px;
-  width: 200px;
-  margin-right: 10px;
-}
-
-.analyze-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.analyze-button:hover {
-  background-color: #0056b3;
-}
-
-.loading-text {
-  font-size: 18px;
-  color: #666;
-}
-
-.error-text {
-  color: red;
-  font-size: 16px;
-}
-
-.prediction-box {
-  background: #f4f4f4;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  text-align: left;
-}
-
-.prediction-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-}
-
-.predicted-prices {
-  list-style-type: none;
+  margin: 0;
   padding: 0;
 }
 
-.predicted-prices li {
-  padding: 5px 0;
+/* 📦 Main Container */
+.container {
+  width: 85%;
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(30, 30, 30, 0.85); /* Glassmorphism */
+  border-radius: 15px;
+  box-shadow: 0px 5px 15px rgba(0, 123, 255, 0.3);
 }
 
+/* 🏆 Title Styling */
+.title {
+  font-size: 34px;
+  font-weight: 700;
+  color: #00ffcc; /* Futuristic Blue-Green */
+  text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.7);
+  margin-bottom: 20px;
+}
+
+/* 🔎 Input Section */
+.input-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+/* 🎯 Ticker Input */
+.ticker-input {
+  width: 250px;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #00ffcc;
+  border-radius: 10px;
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.ticker-input:focus {
+  outline: none;
+  box-shadow: 0px 0px 12px #00ffcc;
+}
+
+/* ⚡ Analyze Button */
+.analyze-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #007bff, #9b51e0);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.analyze-button:hover {
+  box-shadow: 0px 0px 15px #9b51e0;
+  transform: scale(1.05);
+}
+
+/* ⏳ Loading & Error Messages */
+.loading-text {
+  font-size: 18px;
+  color: #00ffcc;
+  font-weight: 500;
+}
+
+.error-text {
+  font-size: 18px;
+  color: #ff4c4c;
+  font-weight: 600;
+}
+
+/* 📊 Prediction Box */
+.prediction-box {
+  background: rgba(40, 40, 40, 0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.1);
+  margin-top: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.prediction-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #00ffcc;
+}
+
+/* 📈 Predicted Prices */
+.predicted-prices {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.predicted-prices li {
+  font-size: 18px;
+  background: rgba(0, 123, 255, 0.2);
+  padding: 8px;
+  border-radius: 8px;
+  margin: 5px 0;
+}
+
+/* 📰 News Section */
 .news-section {
   margin-top: 20px;
   padding: 15px;
-  background: #e3f2fd;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: rgba(50, 50, 50, 0.9);
+  box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.1);
 }
 
 .news-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
 .news-list li {
-  padding: 5px 0;
+  padding: 8px;
   font-size: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 📊 Stock Chart Container */
+.stock-chart-container {
+  background: rgba(30, 30, 30, 0.9);
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 255, 204, 0.3);
+}
+
+/* 🚀 Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container, .prediction-box, .news-section, .stock-chart-container {
+  animation: fadeIn 0.5s ease-in-out;
 }
