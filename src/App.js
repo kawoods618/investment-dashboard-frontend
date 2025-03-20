@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import TradingViewWidget from "./components/TradingViewWidget.js";
+import TradingViewWidget from "./components/TradingViewWidget.js"; // ✅ Explicitly added .js
 import "./App.css";
 
 const BASE_URL = "https://investment-dashboard-backend-production-7220.up.railway.app/api"; // ✅ Updated backend URL
