@@ -6,16 +6,16 @@ const TradingViewWidget = ({ ticker }) => {
     useEffect(() => {
         if (!ticker || !containerRef.current) return;
 
-        // Remove previous script if any
-        containerRef.current.innerHTML = ""; 
+        // Clear any existing content before adding a new widget
+        containerRef.current.innerHTML = "";
 
+        // Create script tag for TradingView widget
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
         script.async = true;
         script.onload = () => console.log("✅ TradingView Widget Loaded Successfully.");
         script.onerror = () => console.error("🚨 TradingView script failed to load.");
 
-        // Add widget configuration
         script.innerHTML = JSON.stringify({
             symbol: ticker,
             width: "100%",
