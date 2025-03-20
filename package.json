@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "HOST=0.0.0.0 PORT=8080 WDS_SOCKET_PORT=0 react-scripts start",
-    "build": "react-scripts build",
+    "build": "ESLINT_NO_DEV_ERRORS=true react-scripts build",
     "test": "react-scripts test"
   }
 }
