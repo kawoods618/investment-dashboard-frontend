@@ -12,7 +12,7 @@
     "chart.js": "^4.4.0",
     "react-chartjs-2": "^5.0.1",
     "cors": "^2.8.5",
-    "react-icons": "^4.11.0"  // ✅ FIXED: No extra comma at the end
+    "react-icons": "^4.11.0"
   },
   "scripts": {
     "start": "HOST=0.0.0.0 PORT=8080 WDS_SOCKET_PORT=0 react-scripts start",
