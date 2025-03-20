@@ -1,155 +1,103 @@
-/* 🎨 Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 body {
-  background: linear-gradient(135deg, #0d0d0d, #1c1c1c);
-  font-family: "Poppins", sans-serif;
-  color: #eaeaea;
-  text-align: center;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
   margin: 0;
   padding: 0;
 }
 
-/* 📦 Main Container */
 .container {
-  width: 85%;
-  max-width: 900px;
-  margin: 50px auto;
-  padding: 25px;
-  background: rgba(20, 20, 20, 0.9);
-  border-radius: 15px;
-  box-shadow: 0px 5px 25px rgba(0, 255, 204, 0.3);
-  transition: all 0.3s ease-in-out;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* 🏆 Title Styling */
 .title {
-  font-size: 36px;
+  font-size: 3rem;
   font-weight: 700;
-  color: #00ffcc;
-  text-shadow: 0px 0px 20px rgba(0, 255, 204, 0.8);
-  margin-bottom: 25px;
-  animation: glowTitle 1.5s infinite alternate;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
 }
 
-/* 🔥 Title Glow Effect */
-@keyframes glowTitle {
-  from {
-    text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.6);
-  }
-  to {
-    text-shadow: 0px 0px 20px rgba(0, 255, 204, 1);
-  }
-}
-
-/* 🔎 Input Section */
 .input-section {
   display: flex;
-  justify-content: center;
+  gap: 10px;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 25px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 10px;
+  border-radius: 12px;
 }
 
-/* 🎯 Ticker Input */
 .ticker-input {
-  width: 280px;
-  padding: 14px;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid #00ffcc;
-  border-radius: 12px;
-  color: white;
-  transition: all 0.3s ease-in-out;
-}
-
-.ticker-input:focus {
-  outline: none;
-  box-shadow: 0px 0px 15px #00ffcc;
-  transform: scale(1.05);
-}
-
-/* ⚡ Analyze Button */
-.analyze-button {
-  padding: 14px 22px;
-  font-size: 18px;
-  font-weight: 700;
-  background: linear-gradient(45deg, #007bff, #9b51e0);
-  color: white;
+  padding: 12px;
+  width: 250px;
+  font-size: 1.2rem;
   border: none;
-  border-radius: 12px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border-radius: 8px;
+}
+
+.analyze-button {
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: #fff;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .analyze-button:hover {
-  box-shadow: 0px 0px 20px #9b51e0;
-  transform: scale(1.08);
+  background: linear-gradient(90deg, #0072ff, #00c6ff);
+  transform: scale(1.05);
 }
 
-/* ⏳ Loading & Error Messages */
-.loading-text {
-  font-size: 18px;
-  color: #00ffcc;
-  font-weight: 500;
-}
-
-.error-text {
-  font-size: 18px;
-  color: #ff4c4c;
-  font-weight: 600;
-}
-
-/* 📊 Prediction Box */
 .prediction-box {
-  background: rgba(40, 40, 40, 0.95);
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.1);
-  margin-top: 25px;
-  transition: all 0.3s ease-in-out;
+  margin-top: 30px;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
 }
 
 .prediction-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: #00ffcc;
-  text-shadow: 0px 0px 15px rgba(0, 255, 204, 0.8);
+  font-size: 1.8rem;
+  color: #00c6ff;
 }
 
-/* 📈 Predicted Prices */
-.predicted-prices {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0;
+.prediction-advice {
+  font-size: 1.5rem;
+  color: #ff00ff;
 }
 
-.predicted-prices li {
-  font-size: 18px;
-  background: rgba(0, 123, 255, 0.3);
-  padding: 10px;
-  border-radius: 10px;
-  margin: 6px 0;
-  transition: 0.3s;
-}
-
-.predicted-prices li:hover {
-  background: rgba(0, 123, 255, 0.5);
-}
-
-/* 📰 News Section */
 .news-section {
-  margin-top: 25px;
-  padding: 20px;
-  border-radius: 15px;
-  background: rgba(50, 50, 50, 0.95);
-  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.15);
-}
-
-.news-section h3 {
-  font-size: 22px;
-  color: #00ffcc;
-  text-shadow: 0px 0px 10px rgba(0, 255, 204, 0.7);
+  margin-top: 30px;
+  width: 80%;
+  max-width: 700px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.4);
 }
 
 .news-list {
@@ -159,51 +107,10 @@ body {
 
 .news-list li {
   padding: 10px;
-  font-size: 16px;
+  font-size: 1.1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease-in-out;
 }
 
-.news-list li:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.02);
-}
-
-/* 📊 Stock Chart Container */
-.stock-chart-container {
-  background: rgba(30, 30, 30, 0.95);
-  padding: 20px;
-  border-radius: 15px;
-  margin-top: 25px;
-  box-shadow: 0px 4px 15px rgba(0, 255, 204, 0.4);
-}
-
-/* 🔥 Glassmorphism Hover Effect */
-@keyframes glassHover {
-  from {
-    background: rgba(40, 40, 40, 0.8);
-  }
-  to {
-    background: rgba(60, 60, 60, 0.95);
-  }
-}
-
-.prediction-box:hover, .news-section:hover, .stock-chart-container:hover {
-  animation: glassHover 0.3s forwards;
-}
-
-/* 🚀 Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.container, .prediction-box, .news-section, .stock-chart-container {
-  animation: fadeIn 0.5s ease-in-out;
+.news-list li:last-child {
+  border-bottom: none;
 }
