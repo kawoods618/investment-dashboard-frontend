@@ -3,7 +3,7 @@ import axios from "axios";
 import TradingViewWidget from "./TradingViewWidget";
 
 const App = () => {
-    const [ticker, setTicker] = useState("");
+    const [ticker, setTicker] = useState(""); // No default value (TSLA removed)
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ const App = () => {
         if (!ticker) return;
         setLoading(true);
         setError(null);
+        setData(null); // Reset old data
 
         try {
             const response = await axios.get(
@@ -22,7 +23,7 @@ const App = () => {
             setData(response.data);
         } catch (err) {
             console.error("❌ API Error:", err);
-            setError("Failed to fetch data.");
+            setError("Failed to fetch data. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -31,7 +32,7 @@ const App = () => {
     return (
         <div className="container">
             <h1 className="title">QuantumVest AI</h1>
-            
+
             <div className="input-section">
                 <input
                     type="text"
@@ -49,12 +50,12 @@ const App = () => {
             {data && (
                 <>
                     <h2>📊 AI Predictions</h2>
-                    <p>Next Day: ${data.predictions?.next_day}</p>
-                    <p>Next Week: ${data.predictions?.next_week}</p>
-                    <p>Next Month: ${data.predictions?.next_month}</p>
+                    <p>Next Day: ${data.predictions?.next_day ?? "N/A"}</p>
+                    <p>Next Week: ${data.predictions?.next_week ?? "N/A"}</p>
+                    <p>Next Month: ${data.predictions?.next_month ?? "N/A"}</p>
 
-                    <h2>📰 Market News</h2>
-                    <p>{data.news_summary}</p>
+                    <h2>📰 Market Insights</h2>
+                    <p>{data.news_summary || "No financial news available."}</p>
 
                     <h2>📈 Stock Chart</h2>
                     <TradingViewWidget ticker={ticker} />
