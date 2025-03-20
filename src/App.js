@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StockChart from "./components/StockChart";
-import "./App.css";
+import "./App.css"; // ✅ Import styles
 
-const BASE_URL = "https://investment-dashboard-backend-production.up.railway.app/api";
+const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
 
 function App() {
   const [ticker, setTicker] = useState("");
@@ -11,13 +11,11 @@ function App() {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [news, setNews] = useState("");
+  const [news, setNews] = useState([]);
 
   useEffect(() => {
     if (ticker.length >= 2) {
-      fetchStockData();
-    } else {
-      setError(""); // ✅ Clear error if input is less than 2 characters
+      fetchStockData(ticker);
     }
   }, [ticker]);
 
@@ -25,15 +23,16 @@ function App() {
     const value = event.target.value.toUpperCase();
     if (/^[A-Z0-9]*$/.test(value)) {
       setTicker(value);
-      setError("");
+      setError(""); // ✅ Clear error when input is valid
     } else {
       setError("Invalid ticker format. Use only letters and numbers.");
     }
   };
 
-  const fetchStockData = async () => {
-    if (!ticker) {
-      return; // ✅ Prevent fetching if ticker is empty
+  const fetchStockData = async (ticker) => {
+    if (ticker.length < 2) {
+      setError("Please enter a valid ticker symbol.");
+      return;
     }
 
     setLoading(true);
@@ -42,17 +41,25 @@ function App() {
     try {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
 
+      if (response.status === 404) {
+        setPrediction(null);
+        setChartData([]);
+        setNews([]);
+        setError(`No stock data found for ${ticker}. Try another ticker.`);
+        return;
+      }
+
       if (!response.data || response.data.error) {
         setPrediction(null);
         setChartData([]);
-        setNews("");
-        setError(response.data?.error || `No stock data found for ${ticker}. Try another ticker.`);
+        setNews([]);
+        setError(response.data?.error || "No data found.");
         return;
       }
 
       setPrediction(response.data.prediction);
       setChartData(response.data.market_data || []);
-      setNews(response.data.prediction?.summary || ""); // ✅ Updated from investment_summary to summary
+      setNews(response.data.prediction.financial_news || []);
     } catch (error) {
       setError("Error fetching data. Please try again.");
     } finally {
@@ -62,7 +69,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="title">QuantumVest AI</h1>
+      <h1 className="title">QuantumVest AI Dashboard</h1>
 
       <div className="input-section">
         <input
@@ -72,7 +79,7 @@ function App() {
           placeholder="Enter stock or crypto ticker"
           className="ticker-input"
         />
-        <button onClick={fetchStockData} className="analyze-button" disabled={!ticker}>
+        <button onClick={() => fetchStockData(ticker)} className="analyze-button">
           Analyze
         </button>
       </div>
@@ -82,34 +89,36 @@ function App() {
 
       {prediction && (
         <div className="prediction-box">
-          <h3 className="prediction-title">Predicted Trend: {prediction?.trend ?? "N/A"}</h3>
-          <h4 className="prediction-advice">Investment Advice: {prediction?.advice ?? "N/A"}</h4>
-          <h4>Confidence: {prediction?.confidence ?? "N/A"}</h4>
+          <h3 className="prediction-title">Predicted Trend: {prediction.trend || "N/A"}</h3>
+          <h4 className="prediction-advice">Investment Advice: {prediction.advice || "N/A"}</h4>
+          <h4>Confidence: {prediction.confidence || "N/A"}</h4>
 
           <h4>Predicted Prices:</h4>
           <ul className="predicted-prices">
-            <li>📊 <strong>Next Day:</strong> ${prediction?.next_day ?? "N/A"}</li>
-            <li>📈 <strong>Next Week:</strong> ${prediction?.next_7_days ?? "N/A"}</li>
-            <li>📉 <strong>Next Month:</strong> ${prediction?.next_30_days ?? "N/A"}</li>
+            <li>📊 <strong>Next Day:</strong> ${prediction.predicted_prices?.next_day || "N/A"}</li>
+            <li>📈 <strong>Next Week:</strong> ${prediction.predicted_prices?.next_week || "N/A"}</li>
+            <li>📉 <strong>Next Month:</strong> ${prediction.predicted_prices?.next_month || "N/A"}</li>
           </ul>
 
           <h4>Optimal Trading Strategy:</h4>
-          <p>✅ Best Buy Price: <strong>${prediction?.best_buy_price ?? "N/A"}</strong> (Date: {prediction?.best_buy_date ?? "N/A"})</p>
-          <p>📈 Best Sell Price: <strong>${prediction?.best_sell_price ?? "N/A"}</strong> (Date: {prediction?.best_sell_date ?? "N/A"})</p>
-          <p>📊 Probability of Success: <strong>{prediction?.probability_of_success ?? "N/A"}</strong></p>
+          <p>✅ Best Buy Price: <strong>${prediction.best_buy_price || "N/A"}</strong> (Date: {prediction.best_buy_date || "N/A"})</p>
+          <p>📈 Best Sell Price: <strong>${prediction.best_sell_price || "N/A"}</strong> (Date: {prediction.best_sell_date || "N/A"})</p>
+          <p>📊 Probability of Success: <strong>{prediction.probability_of_success || "N/A"}</strong></p>
         </div>
       )}
 
-      {chartData.length > 0 && (
-        <div className="stock-chart-container">
-          <StockChart data={chartData} />
-        </div>
-      )}
+      {chartData.length > 0 && <StockChart data={chartData} />}
 
-      {news && (
+      {news.length > 0 && (
         <div className="news-section">
-          <h3>📢 AI Market Summary</h3>
-          <p>{news}</p>
+          <h3>📢 Market News & Insights</h3>
+          <ul className="news-list">
+            {news.map((article, index) => (
+              <li key={index}>
+                <strong>{article.title}</strong>: {article.summary}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
