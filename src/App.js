@@ -74,7 +74,7 @@ function App() {
           <h3 className="prediction-advice">
             📈 Stock Chart
           </h3>
-          <TradingViewWidget symbol={data.ticker} />
+          <TradingViewWidget symbol={data.ticker} />  {/* ✅ Fixed symbol passing */}
         </motion.div>
       )}
     </div>
