@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { FaRocket } from "react-icons/fa"; // 🚀 Import futuristic rocket icon
 import TradingViewWidget from "./components/TradingViewWidget.js";
 import "./App.css";
 
@@ -20,7 +21,7 @@ function App() {
       setData(response.data);
       setError("");
 
-      console.log("✅ Correct Ticker Data:", response.data); // Debugging
+      console.log("✅ Correct Ticker Data:", response.data);
     } catch (err) {
       setError("Error fetching stock data. Possible CORS issue.");
     }
@@ -30,12 +31,13 @@ function App() {
   return (
     <div className="container">
       <motion.h1 
-        className="title"
+        className="title flex items-center space-x-3"
         initial={{ opacity: 0, y: -20 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.8 }}
       >
-        QuantumVest AI 🚀
+        <FaRocket className="text-cyan-400 text-3xl animate-bounce" /> {/* 🚀 Animated futuristic rocket */}
+        QuantumVest AI
       </motion.h1>
 
       <div className="input-section">
