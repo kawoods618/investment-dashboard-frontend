@@ -1,39 +1,57 @@
 import React, { useEffect, useRef } from "react";
 
-const TradingViewWidget = ({ symbol }) => {
-  const widgetRef = useRef(null);
+const TradingViewWidget = ({ ticker }) => {
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!symbol || !widgetRef.current) return;
+    const scriptId = "tradingview-widget-script";
+
+    // ✅ Remove existing script if present
+    const existingScript = document.getElementById(scriptId);
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // ✅ Ensure the container exists before loading script
+    if (!containerRef.current) {
+      console.error("❌ TradingView container not found.");
+      return;
+    }
 
     const script = document.createElement("script");
+    script.id = scriptId;
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
     script.type = "text/javascript";
     script.async = true;
     script.innerHTML = JSON.stringify({
-      symbols: [[symbol]],
+      symbols: [[ticker]],
       chartOnly: false,
       width: "100%",
-      height: 500,
+      height: "500",
       locale: "en",
       colorTheme: "dark",
+      gridLineColor: "#2B2B2B",
+      trendLineColor: "#00FF00",
+      fontColor: "#FFFFFF",
+      underLineColor: "#00FF00",
+      isTransparent: false,
       autosize: true,
       showVolume: true,
     });
 
-    widgetRef.current.innerHTML = "";
-    widgetRef.current.appendChild(script);
+    // ✅ Append script AFTER container is rendered
+    containerRef.current.appendChild(script);
+    console.log("✅ TradingView Widget Loaded");
 
     return () => {
-      widgetRef.current.innerHTML = "";
+      // ✅ Cleanup script on unmount
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
     };
-  }, [symbol]);
+  }, [ticker]);
 
-  return (
-    <div className="tradingview-widget-container">
-      <div ref={widgetRef}></div>
-    </div>
-  );
+  return <div ref={containerRef} className="tradingview-widget-container"></div>;
 };
 
 export default TradingViewWidget;
