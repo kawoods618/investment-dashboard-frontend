@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { motion } from "framer-motion"; // For sleek animations
-import TradingViewWidget from "./components/TradingViewWidget";
-import "./App.css"; // Modern styles with TailwindCSS
+import { motion } from "framer-motion"; // For animations
+import TradingViewWidget from "./components/TradingViewWidget"; // ✅ Ensure correct import path
+import "./App.css"; // ✅ Ensure styles are applied
 
 const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
 
@@ -21,6 +21,7 @@ function App() {
       setError("");
     } catch (err) {
       setError("Error fetching stock data");
+      setData(null); // Prevent crashes
     }
     setLoading(false);
   };
@@ -63,36 +64,23 @@ function App() {
           transition={{ duration: 0.8 }}
         >
           <h3 className="text-2xl font-semibold text-green-400">📊 Predictions</h3>
-          <p><strong>Next Day:</strong> ${data.predictions.next_day}</p>
-          <p><strong>Next Week:</strong> ${data.predictions.next_week}</p>
-          <p><strong>Next Month:</strong> ${data.predictions.next_month}</p>
+          <p><strong>Next Day:</strong> ${data.predictions?.next_day || "N/A"}</p>
+          <p><strong>Next Week:</strong> ${data.predictions?.next_week || "N/A"}</p>
+          <p><strong>Next Month:</strong> ${data.predictions?.next_month || "N/A"}</p>
 
           <h3 className="text-2xl font-semibold text-blue-400 mt-4">📈 Stock Chart</h3>
           <TradingViewWidget symbol={ticker} />
 
           <h3 className="text-2xl font-semibold text-yellow-400 mt-4">📰 Market News & Sentiment</h3>
           <ul className="mt-2">
-            {data.news_sentiment.map((news, idx) => (
+            {data.news_sentiment?.map((news, idx) => (
               <li key={idx} className="border-b border-gray-600 py-2">
                 <span className={`font-bold ${news.sentiment === "POSITIVE" ? "text-green-400" : "text-red-400"}`}>
                   {news.sentiment === "POSITIVE" ? "🟢" : "🔴"} {news.sentiment}
                 </span> - {news.title}
               </li>
-            ))}
+            )) || <p>No news available.</p>}
           </ul>
-
-          <h3 className="text-2xl font-semibold text-purple-400 mt-4">🏛️ Congress & Insider Trading</h3>
-          {data.congress_trades.length > 0 ? (
-            <ul className="mt-2">
-              {data.congress_trades.map((trade, idx) => (
-                <li key={idx} className="border-b border-gray-600 py-2">
-                  🏛️ <strong>{trade.Representative}</strong> bought <strong>{trade.Volume}</strong> shares of {trade.Ticker}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No notable Congress trades detected.</p>
-          )}
         </motion.div>
       )}
     </div>
