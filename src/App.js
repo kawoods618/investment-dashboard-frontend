@@ -3,11 +3,16 @@ import TradingViewWidget from "./components/TradingViewWidget";
 import axios from "axios";
 
 function App() {
-    const [ticker, setTicker] = useState("TSLA");
+    const [ticker, setTicker] = useState("");  // ✅ Default state is empty, not "TSLA"
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
     const fetchStockData = async () => {
+        if (!ticker.trim()) {
+            setError("Please enter a stock or crypto ticker.");
+            return;
+        }
+        
         try {
             const response = await axios.get(`https://investment-dashboard-backend-production-7220.up.railway.app/api/analyze?ticker=${ticker}`);
             setData(response.data);
