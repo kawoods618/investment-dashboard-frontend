@@ -1,4 +1,4 @@
-  "locale": "en",
+i  "locale": "en",
       "colorTheme": "dark",
       "autosize": true,
     });
