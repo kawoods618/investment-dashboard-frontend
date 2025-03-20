@@ -6,16 +6,14 @@ const TradingViewWidget = ({ ticker }) => {
     useEffect(() => {
         if (!ticker) return;
 
-        // Wait until TradingView script loads
         const script = document.createElement("script");
-        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
         script.async = true;
         script.onload = () => console.log("✅ TradingView Widget Loaded Successfully.");
         script.onerror = () => console.error("🚨 TradingView script failed to load.");
 
-        // Ensure TradingView container exists
         if (containerRef.current) {
-            containerRef.current.innerHTML = ""; // Clear old widget
+            containerRef.current.innerHTML = "";
             containerRef.current.appendChild(script);
         }
 
@@ -23,7 +21,7 @@ const TradingViewWidget = ({ ticker }) => {
 
     return (
         <div className="tradingview-widget-container" ref={containerRef}>
-            <div id="tradingview-symbol-overview"></div>
+            <div id="tradingview-advanced-chart"></div>
         </div>
     );
 };
