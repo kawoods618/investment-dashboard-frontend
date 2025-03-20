@@ -6,23 +6,25 @@ const TradingViewWidget = ({ ticker }) => {
   useEffect(() => {
     const scriptId = "tradingview-widget-script";
 
-    // ✅ Remove existing script if present
-    const existingScript = document.getElementById(scriptId);
-    if (existingScript) {
-      existingScript.remove();
-    }
-
-    // ✅ Ensure the container exists before loading script
+    // ✅ Ensure container exists before proceeding
     if (!containerRef.current) {
       console.error("❌ TradingView container not found.");
       return;
     }
 
+    // ✅ Remove any existing TradingView scripts to prevent duplication
+    const existingScript = document.getElementById(scriptId);
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // ✅ Create a new script dynamically
     const script = document.createElement("script");
     script.id = scriptId;
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
     script.type = "text/javascript";
     script.async = true;
+
     script.innerHTML = JSON.stringify({
       symbols: [[ticker]],
       chartOnly: false,
@@ -39,19 +41,24 @@ const TradingViewWidget = ({ ticker }) => {
       showVolume: true,
     });
 
-    // ✅ Append script AFTER container is rendered
+    // ✅ Append the script to the container
     containerRef.current.appendChild(script);
-    console.log("✅ TradingView Widget Loaded");
+
+    console.log("✅ TradingView Widget Loaded Successfully.");
 
     return () => {
-      // ✅ Cleanup script on unmount
+      // ✅ Cleanup the script when the component unmounts
       if (containerRef.current) {
         containerRef.current.innerHTML = "";
       }
     };
   }, [ticker]);
 
-  return <div ref={containerRef} className="tradingview-widget-container"></div>;
+  return (
+    <div className="tradingview-widget-container" ref={containerRef}>
+      <div className="tradingview-widget-container__widget"></div>
+    </div>
+  );
 };
 
 export default TradingViewWidget;
