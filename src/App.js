@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion"; // For sleek animations
-import TradingViewWidget from "./components/TradingViewWidget"; // Import TradingView
+import TradingViewWidget from "./components/TradingViewWidget";
 import "./App.css"; // Modern styles with TailwindCSS
 
 const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
