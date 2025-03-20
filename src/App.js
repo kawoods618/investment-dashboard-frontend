@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import TradingViewWidget from "./components/TradingViewWidget.js"; // ✅ Fix import issue
+import StockChartWidget from "./components/StockChartWidget.js"; // ✅ Uses the fresh new file
 import "./App.css"; 
 
 const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
