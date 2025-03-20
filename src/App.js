@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import StockChartWidget from "./components/StockChartWidget.js"; // ✅ Uses the fresh new file
 import "./App.css"; 
 
-const BASE_URL = "https://investment-dashboard-backend-production-680a.up.railway.app/api";
+const BASE_URL = "https://investment-dashboard-backend-production-7220.up.railway.app/api"; // ✅ Update to new backend URL
 
 function App() {
   const [ticker, setTicker] = useState("");
