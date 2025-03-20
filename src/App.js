@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import TradingViewWidget from "./components/TradingViewWidget.js"; // ✅ Explicitly added .js
+import TradingViewWidget from "./components/TradingViewWidget.js";
 import "./App.css";
 
-const BASE_URL = "https://investment-dashboard-backend-production-7220.up.railway.app/api"; // ✅ Updated backend URL
+const BASE_URL = "https://investment-dashboard-backend-production-7220.up.railway.app/api";
 
 function App() {
   const [ticker, setTicker] = useState("");
@@ -19,6 +19,8 @@ function App() {
       const response = await axios.get(`${BASE_URL}/analyze?ticker=${ticker}`);
       setData(response.data);
       setError("");
+
+      console.log("✅ Correct Ticker Data:", response.data); // Debugging
     } catch (err) {
       setError("Error fetching stock data. Possible CORS issue.");
     }
@@ -41,10 +43,10 @@ function App() {
 
       {data && (
         <motion.div className="w-full max-w-4xl mt-8 bg-gray-800 p-6 rounded-xl shadow-xl">
-          <h3 className="text-2xl font-semibold text-green-400">📊 Predictions</h3>
+          <h3 className="text-2xl font-semibold text-green-400">📊 Predictions for {data.ticker}</h3>
           <p><strong>Next Day:</strong> ${data.predictions?.next_day || "N/A"}</p>
           <h3 className="text-2xl font-semibold text-blue-400 mt-4">📈 Stock Chart</h3>
-          <TradingViewWidget symbol={ticker} />
+          <TradingViewWidget symbol={data.ticker} />
         </motion.div>
       )}
     </div>
