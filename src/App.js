@@ -8,7 +8,7 @@ const App = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // ✅ Fetch stock data
+    // ✅ Fetch stock data from the backend
     const fetchStockData = async () => {
         if (!ticker) return;
         setLoading(true);
@@ -31,7 +31,7 @@ const App = () => {
     return (
         <div className="container">
             <h1 className="title">QuantumVest AI</h1>
-            
+
             <div className="input-section">
                 <input
                     type="text"
@@ -49,12 +49,21 @@ const App = () => {
             {data && (
                 <>
                     <h2>📊 AI Predictions</h2>
-                    <p>Next Day: ${data.predictions?.next_day}</p>
-                    <p>Next Week: ${data.predictions?.next_week}</p>
-                    <p>Next Month: ${data.predictions?.next_month}</p>
+                    <p><strong>Next Day:</strong> ${data.predictions?.next_day}</p>
+                    <p><strong>Next Week:</strong> ${data.predictions?.next_week}</p>
+                    <p><strong>Next Month:</strong> ${data.predictions?.next_month}</p>
 
-                    <h2>📰 Market News Summary</h2>
-                    <p>{data.news_summary}</p>
+                    <h2>🎯 Investment Suggestions</h2>
+                    <p><strong>Recommendation:</strong> {data.predictions?.recommendation || "N/A"}</p>
+                    <p><strong>Suggested Buy Date:</strong> {data.predictions?.buy_date || "N/A"}</p>
+                    <p><strong>Suggested Sell Date:</strong> {data.predictions?.sell_date || "N/A"}</p>
+                    <p><strong>Probability of Success:</strong> {data.predictions?.probability_of_success
+                        ? `${data.predictions.probability_of_success}%`
+                        : "N/A"}
+                    </p>
+
+                    <h2>📰 Market News</h2>
+                    <p>{data.news_summary || "No recent news found."}</p>
 
                     <h2>📈 Stock Chart</h2>
                     <TradingViewWidget ticker={ticker} />
