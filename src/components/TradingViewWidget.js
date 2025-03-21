@@ -6,20 +6,25 @@ const TradingViewWidget = ({ ticker }) => {
     useEffect(() => {
         if (!ticker || !containerRef.current) return;
 
-        // Clear any existing content in the container
+        // Ensure the container is cleared before adding the new script
         containerRef.current.innerHTML = "";
 
-        // Create script element
+        // Create a new div for TradingView
+        const widgetDiv = document.createElement("div");
+        widgetDiv.id = "tradingview_widget";
+
+        // Append the new div to the container
+        containerRef.current.appendChild(widgetDiv);
+
+        // Create and append the script
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
         script.async = true;
-
-        // **FIXED: Properly pass configuration settings**
         script.innerHTML = JSON.stringify({
-            "container_id": "tradingview_chart",
+            "container_id": "tradingview_widget",
             "symbol": ticker,
             "width": "100%",
-            "height": 400,
+            "height": "400",
             "theme": "dark",
             "interval": "D",
             "timezone": "Etc/UTC",
@@ -32,8 +37,7 @@ const TradingViewWidget = ({ ticker }) => {
             "hide_volume": true
         });
 
-        // Append the script to the container
-        containerRef.current.appendChild(script);
+        widgetDiv.appendChild(script);
 
         console.log("✅ TradingView Widget Loaded Successfully.");
 
@@ -43,7 +47,7 @@ const TradingViewWidget = ({ ticker }) => {
         };
     }, [ticker]);
 
-    return <div ref={containerRef} id="tradingview_chart" className="tradingview-widget-container" />;
+    return <div ref={containerRef} className="tradingview-widget-container" />;
 };
 
 export default TradingViewWidget;
