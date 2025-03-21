@@ -1,53 +1,45 @@
 import { useEffect, useRef } from "react";
 
 const TradingViewWidget = ({ ticker }) => {
-    const containerRef = useRef(null);
+  const containerRef = useRef(null);
 
-    useEffect(() => {
-        if (!ticker || !containerRef.current) return;
+  useEffect(() => {
+    if (!ticker || !containerRef.current) return;
 
-        // Ensure the container is cleared before adding the new script
-        containerRef.current.innerHTML = "";
+    containerRef.current.innerHTML = ""; // Clear previous
 
-        // Create a new div for TradingView
-        const widgetDiv = document.createElement("div");
-        widgetDiv.id = "tradingview_widget";
+    const script = document.createElement("script");
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      autosize: true,
+      symbol: ticker,
+      interval: "D",
+      timezone: "Etc/UTC",
+      theme: "light",
+      style: "1",
+      locale: "en",
+      enable_publishing: false,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      allow_symbol_change: true,
+      details: true,
+      studies: ["MACD@tv-basicstudies", "RSI@tv-basicstudies"],
+    });
 
-        // Append the new div to the container
-        containerRef.current.appendChild(widgetDiv);
+    containerRef.current.appendChild(script);
 
-        // Create and append the script
-        const script = document.createElement("script");
-        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-        script.async = true;
-        script.innerHTML = JSON.stringify({
-            "container_id": "tradingview_widget",
-            "symbol": ticker,
-            "width": "100%",
-            "height": "400",
-            "theme": "dark",
-            "interval": "D",
-            "timezone": "Etc/UTC",
-            "style": "1",
-            "locale": "en",
-            "enable_publishing": false,
-            "hide_top_toolbar": true,
-            "hide_legend": true,
-            "save_image": false,
-            "hide_volume": true
-        });
+    return () => {
+      containerRef.current.innerHTML = "";
+      console.log("♻️ Cleaned up TradingView chart.");
+    };
+  }, [ticker]);
 
-        widgetDiv.appendChild(script);
-
-        console.log("✅ TradingView Widget Loaded Successfully.");
-
-        return () => {
-            console.log("♻️ Cleaning up TradingView widget...");
-            containerRef.current.innerHTML = ""; // Cleanup on unmount
-        };
-    }, [ticker]);
-
-    return <div ref={containerRef} className="tradingview-widget-container" />;
+  return (
+    <div className="tradingview-widget-container" ref={containerRef} style={{ height: 500 }}>
+      <div id="tradingview-chart" />
+    </div>
+  );
 };
 
 export default TradingViewWidget;
