@@ -6,7 +6,7 @@ const TradingViewWidget = ({ ticker }) => {
   useEffect(() => {
     if (!ticker || !containerRef.current) return;
 
-    containerRef.current.innerHTML = ""; // Clear previous
+    containerRef.current.innerHTML = ""; // Clear previous chart
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
