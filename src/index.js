@@ -1,14 +1,13 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import './styles.css';
+import './styles.css'; // ✅ Make sure this file exists in /src
 
-// ✅ Get the element that must exist in index.html
-const rootElement = document.getElementById('root');
+const container = document.getElementById('root');
 
-if (rootElement) {
-  const root = createRoot(rootElement);
+if (container) {
+  const root = createRoot(container);
   root.render(<App />);
 } else {
-  console.error("❌ Could not find root element to mount React app.");
+  console.error("❌ No root element found in index.html");
 }
