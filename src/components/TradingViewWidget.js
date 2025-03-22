@@ -4,11 +4,13 @@ const TradingViewWidget = ({ ticker }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Check for valid input
     if (!ticker || typeof ticker !== "string" || ticker.trim() === "") return;
 
-    // Forcefully format symbol with market prefix
-    const formattedSymbol = `NASDAQ:${ticker.toUpperCase()}`;
+    // Known safe fallback exchange prefixes
+    const knownPrefixes = ["NASDAQ", "NYSE", "AMEX"];
+
+    // Try with default prefix — fallback to raw ticker if needed
+    const formattedSymbol = `${knownPrefixes[0]}:${ticker.toUpperCase()}`;
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -28,14 +30,16 @@ const TradingViewWidget = ({ ticker }) => {
       container_id: "tradingview-widget"
     });
 
-    // Clear previous chart
+    // Clear old widget and add new one
     if (containerRef.current) {
       containerRef.current.innerHTML = "";
       containerRef.current.appendChild(script);
     }
 
     return () => {
-      if (containerRef.current) containerRef.current.innerHTML = "";
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
     };
   }, [ticker]);
 
