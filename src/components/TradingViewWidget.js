@@ -6,15 +6,15 @@ const TradingViewWidget = ({ ticker }) => {
   useEffect(() => {
     if (!ticker || typeof ticker !== "string" || ticker.trim() === "") return;
 
-    // Known safe fallback exchange prefixes
+    // Use common exchange prefixes, fallback to first
     const knownPrefixes = ["NASDAQ", "NYSE", "AMEX"];
-
-    // Try with default prefix — fallback to raw ticker if needed
     const formattedSymbol = `${knownPrefixes[0]}:${ticker.toUpperCase()}`;
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
+
+    // Chart config
     script.innerHTML = JSON.stringify({
       autosize: true,
       symbol: formattedSymbol,
@@ -30,7 +30,7 @@ const TradingViewWidget = ({ ticker }) => {
       container_id: "tradingview-widget"
     });
 
-    // Clear old widget and add new one
+    // Clean old chart, append new
     if (containerRef.current) {
       containerRef.current.innerHTML = "";
       containerRef.current.appendChild(script);
@@ -45,7 +45,7 @@ const TradingViewWidget = ({ ticker }) => {
 
   return (
     <div className="tradingview-widget-container" ref={containerRef}>
-      <div id="tradingview-widget" style={{ height: 500 }}></div>
+      <div id="tradingview-widget" style={{ height: "500px", width: "100%" }}></div>
     </div>
   );
 };
