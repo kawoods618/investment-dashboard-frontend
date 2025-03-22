@@ -4,9 +4,7 @@ const TradingViewWidget = ({ ticker }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!ticker || !containerRef.current) return;
-
-    containerRef.current.innerHTML = ""; // Clear previous chart
+    if (!ticker) return;
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -16,28 +14,27 @@ const TradingViewWidget = ({ ticker }) => {
       symbol: ticker,
       interval: "D",
       timezone: "Etc/UTC",
-      theme: "light",
+      theme: "dark",
       style: "1",
       locale: "en",
       enable_publishing: false,
-      hide_top_toolbar: false,
-      hide_legend: false,
+      withdateranges: true,
+      hide_side_toolbar: false,
       allow_symbol_change: true,
-      details: true,
-      studies: ["MACD@tv-basicstudies", "RSI@tv-basicstudies"],
+      container_id: "tradingview-widget"
     });
 
+    containerRef.current.innerHTML = "";
     containerRef.current.appendChild(script);
 
     return () => {
       containerRef.current.innerHTML = "";
-      console.log("♻️ Cleaned up TradingView chart.");
     };
   }, [ticker]);
 
   return (
-    <div className="tradingview-widget-container" ref={containerRef} style={{ height: 500 }}>
-      <div id="tradingview-chart" />
+    <div className="tradingview-widget-container" ref={containerRef}>
+      <div id="tradingview-widget" style={{ height: 500 }}></div>
     </div>
   );
 };
