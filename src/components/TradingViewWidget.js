@@ -4,14 +4,14 @@ const TradingViewWidget = ({ ticker }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!ticker) return;
+    if (!ticker || typeof ticker !== "string" || ticker.trim() === "") return;
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
       autosize: true,
-      symbol: ticker,
+      symbol: `NASDAQ:${ticker}`, // Force known format
       interval: "D",
       timezone: "Etc/UTC",
       theme: "dark",
@@ -24,11 +24,14 @@ const TradingViewWidget = ({ ticker }) => {
       container_id: "tradingview-widget"
     });
 
-    containerRef.current.innerHTML = "";
-    containerRef.current.appendChild(script);
+    // Clear previous chart
+    if (containerRef.current) {
+      containerRef.current.innerHTML = "";
+      containerRef.current.appendChild(script);
+    }
 
     return () => {
-      containerRef.current.innerHTML = "";
+      if (containerRef.current) containerRef.current.innerHTML = "";
     };
   }, [ticker]);
 
