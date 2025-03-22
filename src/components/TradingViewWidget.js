@@ -4,14 +4,18 @@ const TradingViewWidget = ({ ticker }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // Check for valid input
     if (!ticker || typeof ticker !== "string" || ticker.trim() === "") return;
+
+    // Forcefully format symbol with market prefix
+    const formattedSymbol = `NASDAQ:${ticker.toUpperCase()}`;
 
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
       autosize: true,
-      symbol: `NASDAQ:${ticker}`, // Force known format
+      symbol: formattedSymbol,
       interval: "D",
       timezone: "Etc/UTC",
       theme: "dark",
