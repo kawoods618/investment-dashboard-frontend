@@ -1,100 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
+/* App.css – QuantumVest AI futuristic style */
 body {
-  background: radial-gradient(circle at 50% 50%, #0a0f1a, #060a13);
-  font-family: 'Orbitron', sans-serif;
-  color: #ffffff;
   margin: 0;
-  padding: 0;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #0f0f0f;
+  color: #ffffff;
 }
 
 .container {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  justify-content: center;
-  padding: 20px;
+  padding: 2rem;
 }
 
 .title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #00eaff;
-  text-shadow: 0px 0px 20px #00eaff, 0px 0px 40px #00eaff;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #0ff;
+  }
+  to {
+    text-shadow: 0 0 20px #0ff, 0 0 30px #0ff;
+  }
 }
 
 .input-section {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 12px;
-  border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  margin-top: 2rem;
 }
 
 .ticker-input {
-  padding: 14px;
-  width: 270px;
-  font-size: 1.2rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
   border: none;
-  outline: none;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.05);
   color: #fff;
-  border-radius: 10px;
-}
-
-.ticker-input:focus {
-  box-shadow: 0px 0px 10px #00eaff;
+  backdrop-filter: blur(6px);
+  width: 240px;
 }
 
 .analyze-button {
-  padding: 14px 22px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  background: linear-gradient(90deg, #00eaff, #0077ff);
-  color: #fff;
+  margin-left: 1rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  border-radius: 12px;
   border: none;
+  background-color: #1f1fff;
+  color: white;
   cursor: pointer;
-  border-radius: 10px;
-  box-shadow: 0px 0px 15px #00eaff;
+  box-shadow: 0 0 10px #1f1fff;
+  transition: transform 0.2s ease-in-out;
 }
 
 .analyze-button:hover {
-  background: linear-gradient(90deg, #0077ff, #00eaff);
   transform: scale(1.05);
-  box-shadow: 0px 0px 25px #00eaff;
 }
 
 .data-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  text-align: left;
-  width: 80%;
+  margin: 2rem auto;
+  padding: 1.5rem;
   max-width: 600px;
-  margin-top: 20px;
-}
-
-.data-card h3 {
-  color: #00eaff;
-  text-shadow: 0px 0px 8px #00eaff;
-}
-
-.data-card p {
-  color: #ffffff;
-  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
 }
 
 .error {
-  color: red;
+  color: #ff4c4c;
   font-weight: bold;
 }
