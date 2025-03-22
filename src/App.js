@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import TradingViewWidget from "./components/TradingViewWidget";
+import "./styles.css";
 
 const App = () => {
   const [ticker, setTicker] = useState("");
@@ -29,8 +30,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1 className="title animate-float">QuantumVest AI</h1>
-
+      <h1 className="title">QuantumVest AI</h1>
       <div className="input-section">
         <input
           type="text"
@@ -46,24 +46,25 @@ const App = () => {
       {error && <p className="error">{error}</p>}
 
       {data && (
-        <div className="data-card">
-          <h3>📊 AI Predictions</h3>
-          <p>Next Day: ${data.predictions?.next_day}</p>
-          <p>Next Week: ${data.predictions?.next_week}</p>
-          <p>Next Month: ${data.predictions?.next_month}</p>
+        <>
+          <div className="data-card">
+            <h3>📊 AI Predictions</h3>
+            <p><strong>Next Day:</strong> ${data.predictions?.next_day}</p>
+            <p><strong>Next Week:</strong> ${data.predictions?.next_week}</p>
+            <p><strong>Next Month:</strong> ${data.predictions?.next_month}</p>
+            <p><strong>Success Probability:</strong> {data.predictions?.probability}%</p>
+          </div>
 
-          <h3>💡 Investment Suggestion</h3>
-          <p>{data.predictions?.suggestion}</p>
+          <div className="data-card">
+            <h3>📰 Market News Summary</h3>
+            <p>{data.news_summary || "No news available."}</p>
+          </div>
 
-          <h3>📈 Probability of Success</h3>
-          <p>{data.predictions?.probability}%</p>
-
-          <h3>📰 News Summary</h3>
-          <p>{data.news_summary || "No financial news available."}</p>
-
-          <h3>📉 Chart</h3>
-          <TradingViewWidget ticker={ticker} />
-        </div>
+          <div className="data-card">
+            <h3>📈 Stock Chart</h3>
+            <TradingViewWidget ticker={ticker} />
+          </div>
+        </>
       )}
     </div>
   );
