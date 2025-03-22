@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import TradingViewWidget from "./components/TradingViewWidget";
-import "./styles.css";
+import "./app.css";
 
 const App = () => {
   const [ticker, setTicker] = useState("");
