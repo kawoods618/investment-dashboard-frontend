@@ -75,8 +75,10 @@ body {
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   overflow-x: auto;
+  text-align: left;
 }
 
+/* Error styling */
 .error {
   color: #ff4c4c;
   font-weight: bold;
@@ -89,7 +91,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 16px;
 }
 
 #tradingview-widget {
@@ -98,4 +102,34 @@ body {
   min-height: 400px;
   border-radius: 12px;
   overflow: hidden;
+}
+
+/* Optional: Chart loading animation placeholder */
+/*
+.chart-loading {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  margin-top: 1rem;
+}
+*/
+
+/* Optional: Responsive tweaks for mobile */
+@media (max-width: 600px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .ticker-input {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+
+  .analyze-button {
+    font-size: 0.9rem;
+  }
+
+  .data-card {
+    padding: 1rem;
+  }
 }
