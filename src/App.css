@@ -1,4 +1,4 @@
-/* ✅ Full Updated App.css – QuantumVest AI futuristic + responsive layout */
+/* App.css – QuantumVest AI futuristic style */
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
@@ -75,12 +75,6 @@ body {
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   overflow-x: auto;
-  text-align: left;
-}
-
-.chart-card {
-  padding: 0;
-  overflow: hidden;
 }
 
 .error {
@@ -91,43 +85,7 @@ body {
 /* 📈 TradingView Chart Container Fix */
 .tradingview-widget-container {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  box-sizing: border-box;
-  margin: 0 auto;
-}
-
-#tradingview-widget {
-  width: 100% !important;
-  height: 500px !important;
-  min-height: 400px;
-  max-width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* Optional: Responsive tweaks for mobile */
-@media (max-width: 600px) {
-  .title {
-    font-size: 2rem;
-  }
-
-  .ticker-input {
-    width: 180px;
-    font-size: 0.9rem;
-  }
-
-  .analyze-button {
-    font-size: 0.9rem;
-  }
-
-  .data-card {
-    padding: 1rem;
-  }
-
-  #tradingview-widget {
-    height: 400px !important;
-  }
+  max-width: 800px; /* Ensures the chart doesn't exceed this width */
+  height: 500px; /* Fixed height to prevent vertical squishing */
+  margin: 0 auto; /* Centers the chart horizontally */
 }
