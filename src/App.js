@@ -1,4 +1,3 @@
-// ✅ Full Updated App.js
 import React, { useState } from "react";
 import axios from "axios";
 import TradingViewWidget from "./components/TradingViewWidget";
@@ -40,9 +39,7 @@ const App = () => {
           onChange={(e) => setTicker(e.target.value.toUpperCase())}
           className="ticker-input"
         />
-        <button onClick={fetchStockData} className="analyze-button">
-          Analyze
-        </button>
+        <button onClick={fetchStockData} className="analyze-button">Analyze</button>
       </div>
 
       {loading && <p>Loading data...</p>}
@@ -52,33 +49,6 @@ const App = () => {
         <>
           <div className="data-card">
             <h3>📊 AI Predictions</h3>
-            <p>
-              <strong>Next Day:</strong> ${data.predictions?.next_day}
-            </p>
-            <p>
-              <strong>Next Week:</strong> ${data.predictions?.next_week}
-            </p>
-            <p>
-              <strong>Next Month:</strong> ${data.predictions?.next_month}
-            </p>
-            <p>
-              <strong>Success Probability:</strong> {data.predictions?.probability}%
-            </p>
-          </div>
-
-          <div className="data-card">
-            <h3>📰 Market News Summary</h3>
-            <p>{data.news_summary || "No news available."}</p>
-          </div>
-
-          <div className="data-card chart-card">
-            <h3>📈 Stock Chart</h3>
-            <TradingViewWidget ticker={ticker} />
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
-
-export default App;
+            <p><strong>Next Day:</strong> {data.predictions?.next_day !== "N/A" ? `$${
+::contentReference[oaicite:10]{index=10}
+ 
