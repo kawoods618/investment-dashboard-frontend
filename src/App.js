@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from "react";
 import axios from "axios";
 import TradingViewWidget from "./components/TradingViewWidget";
@@ -51,16 +52,23 @@ const App = () => {
       {data && (
         <>
           <div className="data-card">
-            <h3>📊 AI Predictions</h3>
+            <h3>💡 Investment Strategy Recommendation</h3>
+            <p><strong>Buy at:</strong> ${data.predictions?.buy_price} on {data.predictions?.buy_date}</p>
+            <p><strong>Sell at:</strong> ${data.predictions?.sell_price} on {data.predictions?.sell_date}</p>
+            <p><strong>Expected Return:</strong> {data.predictions?.sell_price && data.predictions?.buy_price ? `${((data.predictions.sell_price - data.predictions.buy_price) / data.predictions.buy_price * 100).toFixed(2)}%` : "N/A"}</p>
+            <p><strong>Probability of Success:</strong> {data.predictions?.probability}%</p>
+          </div>
+
+          <div className="data-card">
+            <h3>📊 AI Price Forecast</h3>
             <p><strong>Next Day:</strong> ${data.predictions?.next_day}</p>
             <p><strong>Next Week:</strong> ${data.predictions?.next_week}</p>
             <p><strong>Next Month:</strong> ${data.predictions?.next_month}</p>
-            <p><strong>Success Probability:</strong> {data.predictions?.probability}%</p>
           </div>
 
           <div className="data-card">
             <h3>📰 Market News Summary</h3>
-            <p>{data.news_summary || "No news available."}</p>
+            <pre style={{ whiteSpace: "pre-wrap", lineHeight: "1.5" }}>{data.news_summary || "No news available."}</pre>
           </div>
 
           <div className="data-card chart-card">
